@@ -1,9 +1,6 @@
 package controllers;
 
-import model.BaseComment;
-import model.Maopao;
-import model.MaopaoList;
-import model.UserObject;
+import model.*;
 import play.libs.Json;
 import play.mvc.*;
 import play.db.*;
@@ -14,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -134,5 +132,66 @@ public class App extends Controller{
 
         return ok(Json.toJson(maopaoList));
 
+    }
+
+    /**
+     * the content-type should be application/x-www-form-urlencoded
+     * @return
+     */
+    public static Result publishTweet(){
+
+        TweetResult tweetResult;
+        Http.Request request = request();
+        Map<String, String[]> param = request.body().asFormUrlEncoded();
+        String content = param.get("content")[0];
+        String device = param.get("device")[0];
+
+        // TODO use Session to store uid(owner_id)
+        String owner_id = "123456";
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        String insertTweet = "INSERT INTO t_tweet (owner_id, sysversion, content, device, clansid) VALUES( '%s', 'mac', '%s', '%s', 1)";
+        String queryTweet = "SELECT * FROM t_tweet where id = ";
+        String queryLastRowId = "SELECT LAST_INSERT_ID()";
+        insertTweet = String.format(insertTweet, owner_id, content, device);
+        long rowId;
+        try {
+            connection = DB.getConnection();
+            statement = connection.createStatement();
+            statement.executeUpdate(insertTweet);
+
+            resultSet = statement.executeQuery(queryLastRowId);
+            resultSet.next();
+            rowId = resultSet.getLong("LAST_INSERT_ID()");
+
+            resultSet = statement.executeQuery(queryTweet + rowId);
+            resultSet.next(); // attention
+            Maopao maopao = new Maopao(resultSet);
+            tweetResult = new TweetResult(0, maopao);
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            tweetResult = new TweetResult(-1, null);
+
+        }finally {
+            try {
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return ok(Json.toJson(tweetResult));
     }
 }

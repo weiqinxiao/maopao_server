@@ -22,6 +22,7 @@ public class Maopao implements Serializable {
     public ArrayList<UserObject> like_users = new ArrayList<UserObject>();
     public boolean liked;
     public int likes;
+    // TODO modify the following line, now it is testing
     public UserObject owner = new UserObject();
     public String owner_id = "";
     public String path = "";
