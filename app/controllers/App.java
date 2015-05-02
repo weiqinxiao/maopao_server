@@ -18,6 +18,9 @@ import java.util.Map;
  * Created by jiangecho on 15/5/2.
  */
 public class App extends Controller{
+    private static final String QUERY_LAST_ID = "SELECT LAST_INSERT_ID()";
+    private static final String LAST_ROW_ID_COLUMN_NAME = "LAST_INSERT_ID()";
+
     public static Result index(){
        return ok("HELLO world");
     }
@@ -152,7 +155,7 @@ public class App extends Controller{
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        String insertTweet = "INSERT INTO t_tweet (owner_id, sysversion, content, device, clansid) VALUES( '%s', 'mac', '%s', '%s', 1)";
+        String insertTweet = "INSERT INTO t_tweet (owner_id, create_at, sysversion, content, device, clansid) VALUES( '%s', now(), 'mac', '%s', '%s', 1)";
         String queryTweet = "SELECT * FROM t_tweet where id = ";
         String queryLastRowId = "SELECT LAST_INSERT_ID()";
         insertTweet = String.format(insertTweet, owner_id, content, device);
@@ -193,5 +196,65 @@ public class App extends Controller{
         }
 
         return ok(Json.toJson(tweetResult));
+    }
+
+    public static Result publishComment(long id){
+
+        CommentResult commentResult;
+        Map<String, String[]> param = request().body().asFormUrlEncoded();
+        String content = param.get("content")[0];
+        // TODO more fields;
+
+        // TODO use cookies to store uid
+        String uid = "12345";
+
+        String insertComment = "INSERT INTO t_comment ( owner_id, create_at, tweet_id, content) VALUES (%s, now(), %s, '%s')";
+        insertComment = String.format(insertComment, uid, id, content);
+
+        String queryComment = "SELECT * FROM t_comment where id = ";
+
+        long rowId;
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+
+        try{
+            connection = DB.getConnection();
+            statement = connection.createStatement();
+            statement.executeUpdate(insertComment);
+            resultSet = statement.executeQuery(QUERY_LAST_ID);
+            resultSet.next();
+            rowId = resultSet.getLong(LAST_ROW_ID_COLUMN_NAME);
+
+            resultSet = statement.executeQuery(queryComment + rowId);
+            resultSet.next();
+            BaseComment comment = new BaseComment(resultSet);
+            commentResult = new CommentResult(0, comment);
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            commentResult = new CommentResult(-1, null);
+        }finally {
+            try {
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (statement != null){
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+
+            }catch (SQLException e){
+
+            }
+
+        }
+
+
+        return ok(Json.toJson(commentResult));
     }
 }
