@@ -1,5 +1,7 @@
 package model;
 
+import util.Util;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +36,8 @@ public class Maopao implements Serializable {
             try {
                 id = resultSet.getString("id");
                 owner_id = resultSet.getString("owner_id");
-                content = resultSet.getString("content");
+                String tmp = "<p>" + resultSet.getString("content") + "</p>";
+                content = Util.processMarkDownImageLink(tmp);
                 created_at = resultSet.getString("create_at");
                 device = resultSet.getString("device");
                 comments = resultSet.getInt("comment_count");
