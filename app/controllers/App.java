@@ -56,7 +56,7 @@ public class App extends Controller{
 
         String orderBy = "id";
         if ("hot".equals(sort)){
-            orderBy = "comments";
+            orderBy = "comment_count";
         }
 
         Connection connection = null;
@@ -97,7 +97,7 @@ public class App extends Controller{
                     tweetId = Long.parseLong(maopao.id);
                     maopao.comment_list = new ArrayList<BaseComment>();
                     BaseComment comment;
-                    commentResultSet = DBUtil.queryBy(commentStatement, tableComment, "id", "" + tweetId);
+                    commentResultSet = DBUtil.queryBy(commentStatement, tableComment, "tweet_id", "" + tweetId);
                     while (commentResultSet.next()){
                         comment = new BaseComment(commentResultSet);
                         comment.owner = new UserObject();
@@ -233,6 +233,8 @@ public class App extends Controller{
             statement = connection.createStatement();
             statement.executeUpdate(insertComment);
             rowId = DBUtil.queryLastId(statement);
+
+            DBUtil.increaseOneById(statement, "t_tweet", "comment_count", id);
 
             resultSet = statement.executeQuery(queryComment + rowId);
             resultSet.next();

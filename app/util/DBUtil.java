@@ -15,6 +15,7 @@ public class DBUtil {
     private static final String QUERY_LESS_LAST_RECORD = "SELECT * FROM %s WHERE %s < %s ORDER BY %s DESC LIMIT %s";
 
     private static final String QUERY_BY = "SELECT * FROM %s WHERE %s = '%s'";
+    private static final String INCREASE_COLUMN_VALUE_BY_ONE = "UPDATE %s SET %s = %s + 1 WHERE id = %s";
 
     public static long queryLastId(Statement statement) throws SQLException {
         ResultSet resultSet = statement.executeQuery(QUERY_LAST_ID);
@@ -31,7 +32,6 @@ public class DBUtil {
     }
 
     /**
-     * I have called resultSet.next() for you!!!!!
      *
      * @param statement
      * @param table
@@ -43,7 +43,6 @@ public class DBUtil {
     public static ResultSet queryLastRecord(Statement statement, String table, String orderBy, int limit) throws SQLException {
         String sql = String.format(QUERY_LAST_RECORD, table, orderBy, limit);
         ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
         return resultSet;
     }
 
@@ -62,7 +61,6 @@ public class DBUtil {
     public static ResultSet queryLessLastRecord(Statement statement, String table, String orderBy, String startValue, int limit) throws SQLException {
         String sql = String.format(QUERY_LESS_LAST_RECORD, table, orderBy, startValue, orderBy, limit);
         ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
         return resultSet;
     }
 
@@ -78,7 +76,14 @@ public class DBUtil {
     public static ResultSet queryBy(Statement statement, String table, String columnName, String columnValue) throws SQLException {
         String sql = String.format(QUERY_BY, table, columnName, columnValue);
         ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
         return resultSet;
+    }
+
+    public static void increaseOneById(Statement statement, String table, String columnName, long id) throws SQLException {
+        String sql = String.format(INCREASE_COLUMN_VALUE_BY_ONE, table, columnName, columnName, id);
+        statement.execute(sql);
+    }
+
+    public static void updateColumnById(Statement statement, String table, String columnName, String columnNewValue, long id){
     }
 }
