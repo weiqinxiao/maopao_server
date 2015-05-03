@@ -4,6 +4,7 @@ import model.*;
 import play.libs.Json;
 import play.mvc.*;
 import play.db.*;
+import util.DBUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -18,8 +19,6 @@ import java.util.Map;
  * Created by jiangecho on 15/5/2.
  */
 public class App extends Controller{
-    private static final String QUERY_LAST_ID = "SELECT LAST_INSERT_ID()";
-    private static final String LAST_ROW_ID_COLUMN_NAME = "LAST_INSERT_ID()";
 
     public static Result index(){
        return ok("HELLO world");
@@ -55,24 +54,33 @@ public class App extends Controller{
         Maopao maopao;
         MaopaoList maopaoList = new MaopaoList();
 
-        String sortType = " order by id ";
+        String orderBy = "id";
         if ("hot".equals(sort)){
-            sortType = " order by comment_count ";
+            orderBy = "comments";
         }
 
-        String queryTweet = "SELECT * FROM t_tweet where id > " + last_id + sortType + " limit 30";
-        String queryComment = "SELECT * FROM t_comment WHERE id = ";
         Connection connection = null;
         Statement maopaoStatement = null;
         Statement commentStatement = null;
         ResultSet maopaoResultSet = null;
         ResultSet commentResultSet = null;
         long tweetId;
+        long maxTweetId;
+        String tableComment = "t_comment";
+        String tableMaopao = "t_tweet";
         try{
             connection = DB.getConnection();
             maopaoStatement = connection.createStatement();
             commentStatement = connection.createStatement();
-            maopaoResultSet = maopaoStatement.executeQuery(queryTweet);
+
+            maxTweetId = DBUtil.queryMaxId(maopaoStatement, tableMaopao);
+
+            if (last_id > maxTweetId){
+                maopaoResultSet = DBUtil.queryLastRecord(maopaoStatement, tableMaopao, orderBy, 30);
+            }else {
+                maopaoResultSet = DBUtil.queryLessLastRecord(maopaoStatement, tableMaopao, orderBy, "" + last_id, 30);
+            }
+
 
             maopaos = new ArrayList<Maopao>();
             while (maopaoResultSet.next()){
@@ -89,7 +97,7 @@ public class App extends Controller{
                     tweetId = Long.parseLong(maopao.id);
                     maopao.comment_list = new ArrayList<BaseComment>();
                     BaseComment comment;
-                    commentResultSet = commentStatement.executeQuery(queryComment + tweetId);
+                    commentResultSet = DBUtil.queryBy(commentStatement, tableComment, "id", "" + tweetId);
                     while (commentResultSet.next()){
                         comment = new BaseComment(commentResultSet);
                         comment.owner = new UserObject();
@@ -224,9 +232,7 @@ public class App extends Controller{
             connection = DB.getConnection();
             statement = connection.createStatement();
             statement.executeUpdate(insertComment);
-            resultSet = statement.executeQuery(QUERY_LAST_ID);
-            resultSet.next();
-            rowId = resultSet.getLong(LAST_ROW_ID_COLUMN_NAME);
+            rowId = DBUtil.queryLastId(statement);
 
             resultSet = statement.executeQuery(queryComment + rowId);
             resultSet.next();
