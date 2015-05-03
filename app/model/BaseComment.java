@@ -1,7 +1,7 @@
 package model;
 
 
-import util.Util;
+import util.TextContentUtil;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -27,7 +27,7 @@ public class BaseComment implements Serializable{
                 owner_id = resultSet.getString("owner_id");
                 tweet_id = resultSet.getString("tweet_id");
                 String tmp = "<p>" + resultSet.getString("content") + "</p>";
-                content = Util.processMarkDownImageLink(tmp);
+                content = TextContentUtil.processMarkDownImageLink(tmp);
                 created_at = resultSet.getString("create_at");
             } catch (SQLException e) {
                 e.printStackTrace();

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Created by jiangecho on 15/5/2.
  */
-public class Util {
+public class TextContentUtil {
     public static String processMarkDownImageLink(String string){
         String markdownImagePattern = "!\\[[^\\]]*\\]\\(([^\\)]*)\\)";
         String imageAhref = "<a href=\"$1\" target=\"_blank\" class=\"bubble-markdown-image-link\" " +
