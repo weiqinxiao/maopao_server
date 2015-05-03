@@ -17,4 +17,40 @@ public class TextContentUtil {
 
         return result;
     }
+
+    public static String processEmoji(String string){
+        String emojiPattern = "%3A([^\\\\])%3A";
+        String emojiHref = "<img class=\"emotion emoji\" src=\"https://coding.net/static/emojis/$1.png\" title=\"$1\"></p>";
+
+        string = string.replaceAll(emojiPattern, emojiHref);
+        return string;
+    }
+
+    public static String processAt(String string){
+        String atPattern = "%40(.*)\\+";
+        // TODO maybe the link should be something like: https://coding.net/u....
+        // <a class=\"at-someone\" href=\"https://coding.net/u/dandelion\" rel=\"nofollow\">@dandelion</a>
+
+        String atHref = "<a class=\"at-someone\" href=\"/u/@$1\" rel=\"nofollow\">@$1</a> ";
+        string = string.replaceAll(atPattern, atHref);
+        return string;
+    }
+
+    public static String processTweetContent(String tweetContent){
+        if (tweetContent == null){
+            return null;
+        }
+        tweetContent = processMarkDownImageLink(tweetContent);
+        tweetContent = processAt(tweetContent);
+        tweetContent = processEmoji(tweetContent);
+
+        return tweetContent;
+    }
+
+    // TODO I think we should process the content before insert into the db
+    public static String processComment(String comment){
+        comment = processEmoji(comment);
+        comment = processAt(comment);
+        return comment;
+    }
 }
