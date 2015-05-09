@@ -8,6 +8,7 @@ GET         /                               controllers.App.index
 GET         /test                           controllers.App.test()
 GET         /api/tweet/public_tweets        controllers.App.publicTweets(last_id:Long ?=100, sort:String ?="time")
 GET         /api/token                      controllers.App.qiniuToken()
+GET         /api/tweet/:id/comments         controllers.Comment.comments(id: Long, pageSize: Integer)
 
 
 POST        /api/tweet                      controllers.App.publishTweet()

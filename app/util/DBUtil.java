@@ -119,4 +119,8 @@ public class DBUtil {
 
         return id;
     }
+
+    public static ResultSet query(Statement statement, String sql) throws SQLException {
+        return statement.executeQuery(sql);
+    }
 }
