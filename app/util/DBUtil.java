@@ -1,5 +1,8 @@
 package util;
 
+import play.db.DB;
+
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -79,11 +82,41 @@ public class DBUtil {
         return resultSet;
     }
 
+    /**
+     * 把某个字段加1
+     * @param statement
+     * @param table
+     * @param columnName
+     * @param id
+     * @throws SQLException
+     */
     public static void increaseOneById(Statement statement, String table, String columnName, long id) throws SQLException {
         String sql = String.format(INCREASE_COLUMN_VALUE_BY_ONE, table, columnName, columnName, id);
         statement.execute(sql);
     }
 
     public static void updateColumnById(Statement statement, String table, String columnName, String columnNewValue, long id){
+    }
+
+    public static long insert(String sql){
+        Connection connection = DB.getConnection();
+        Statement statement = null;
+        long id = -1;
+        try {
+            statement = connection.createStatement();
+            statement.execute(sql);
+            id = queryLastId(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                statement.close();
+                connection.close();
+            }catch (SQLException e){
+
+            }
+        }
+
+        return id;
     }
 }

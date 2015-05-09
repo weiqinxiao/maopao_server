@@ -128,6 +128,13 @@ public class UserObject implements Serializable{
         id = "7828";
     }
 
+    public UserObject(long id, String name, String headImgUrl){
+        this.avatar = headImgUrl;
+        this.id = id + "";
+        this.name = name;
+        this.created_at = System.currentTimeMillis();
+    }
+
     public UserObject(ResultSet resultSet){
         if (resultSet != null){
             try {

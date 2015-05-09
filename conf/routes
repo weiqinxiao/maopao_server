@@ -7,9 +7,12 @@ GET         /                               controllers.App.index
 #GET     /test/:str                          controllers.App.test(str:String)
 GET         /test                           controllers.App.test()
 GET         /api/tweet/public_tweets        controllers.App.publicTweets(last_id:Long ?=100, sort:String ?="time")
+GET         /api/token                      controllers.App.qiniuToken()
+
+
 POST        /api/tweet                      controllers.App.publishTweet()
 POST        /api/tweet/:id/comment          controllers.App.publishComment(id :Long)
-GET         /api/token                      controllers.App.qiniuToken()
+POST        /api/login                      controllers.User.login()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                   controllers.Assets.at(path="/public", file)
