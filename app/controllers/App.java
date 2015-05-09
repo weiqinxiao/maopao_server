@@ -7,6 +7,8 @@ import play.db.*;
 import util.DBUtil;
 import util.QiniuUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -155,11 +157,17 @@ public class App extends Controller{
         TweetResult tweetResult;
         Http.Request request = request();
         Map<String, String[]> param = request.body().asFormUrlEncoded();
-        String content = param.get("content")[0];
-        String device = param.get("device")[0];
+        String content = null;
+        // TODO i am not sure need to decode or not?
+//        try {
+//            content = URLDecoder.decode(param.get("content")[0], "utf-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
 
-        // TODO use Session to store uid(owner_id)
-        String owner_id = "123456";
+        content = param.get("content")[0];
+        String device = param.get("device")[0];
+        String owner_id = session("id");
 
         Connection connection = null;
         Statement statement = null;
@@ -214,8 +222,7 @@ public class App extends Controller{
         String content = param.get("content")[0];
         // TODO more fields;
 
-        // TODO use cookies to store uid
-        String uid = "12345";
+        String uid = session("id");
 
         String insertComment = "INSERT INTO t_comment ( owner_id, create_at, tweet_id, content) VALUES (%s, now(), %s, '%s')";
         insertComment = String.format(insertComment, uid, id, content);

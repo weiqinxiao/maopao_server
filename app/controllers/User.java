@@ -33,6 +33,7 @@ public class User extends Controller{
         long id = DBUtil.insert(sql);
         UserObject userObject = new UserObject(id, name, headImgUrl);
 
+        session("id", id + "");
         return ok(Json.toJson(userObject));
     }
 }
