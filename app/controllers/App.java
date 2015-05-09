@@ -5,6 +5,7 @@ import play.libs.Json;
 import play.mvc.*;
 import play.db.*;
 import util.DBUtil;
+import util.QiniuUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -264,5 +265,9 @@ public class App extends Controller{
 
 
         return ok(Json.toJson(commentResult));
+    }
+
+    public static Result qiniuToken(){
+        return ok(QiniuUtil.getUploadToken());
     }
 }
