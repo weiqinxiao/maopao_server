@@ -102,7 +102,7 @@ public class Tweet extends Controller{
                                                     commentResultSet.getString(1),
                                                     tweetId + "",
                                                     commentResultSet.getString(5),
-                                                    commentResultSet.getString(6)
+                                                    commentResultSet.getDate(6).getTime()
                         );
                         //UserObject(long id, String name, String headImgUrl, long created_at){
                         comment.owner = new UserObject(commentResultSet.getLong(1),

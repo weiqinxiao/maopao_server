@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by cc191954 on 14-8-21.
@@ -17,7 +18,7 @@ public class Maopao implements Serializable {
     public ArrayList<BaseComment> comment_list = new ArrayList<BaseComment>();
     public int comments;
     public String content = "";
-    public String created_at; // attention: the original type is long
+    public long created_at; // attention: the original type is long
     public String id = "";
     public ArrayList<UserObject> like_users = new ArrayList<UserObject>();
     public boolean liked;
@@ -43,7 +44,7 @@ public class Maopao implements Serializable {
 //                String tmp = "<p>" + resultSet.getString("content") + "</p>"; // TODO handle the content before insert into db
 //                content = TextContentUtil.processMarkDownImageLink(tmp);
                 content = resultSet.getString("content");
-                created_at = resultSet.getString("create_at");
+                created_at = resultSet.getDate("create_at").getTime();
                 device = resultSet.getString("device");
                 comments = resultSet.getInt("comment_count");
                 likes = resultSet.getInt("like_count");
