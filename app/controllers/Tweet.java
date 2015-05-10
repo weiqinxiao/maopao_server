@@ -81,11 +81,25 @@ public class Tweet extends Controller{
                 }
                 if (maopao.comments > 0){
                     maopao.comment_list = new ArrayList<BaseComment>();
+                    String sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_comment.id, t_comment.content, t_comment.create_at, t_user.created_at " +
+                            "FROM t_user INNER JOIN t_comment ON t_user.id = t_comment.owner_id WHERE tweet_id = %s";
+                    sql = String.format(sql, tweetId);
                     BaseComment comment;
-                    commentResultSet = DBUtil.queryBy(commentStatement, tableComment, "tweet_id", "" + tweetId);
+                    commentResultSet = commentStatement.executeQuery(sql);
                     while (commentResultSet.next()){
-                        comment = new BaseComment(commentResultSet);
-                        comment.owner = new UserObject();
+                        //BaseComment(String id, String owner_id, String tweet_id, String content, String created_at)
+                        comment = new BaseComment(commentResultSet.getString(4),
+                                                    commentResultSet.getString(1),
+                                                    tweetId + "",
+                                                    commentResultSet.getString(5),
+                                                    commentResultSet.getString(6)
+                        );
+                        //UserObject(long id, String name, String headImgUrl, long created_at){
+                        comment.owner = new UserObject(commentResultSet.getLong(1),
+                                                        commentResultSet.getString(2),
+                                                        commentResultSet.getString(3),
+                                                        commentResultSet.getLong(7)
+                                );
                         maopao.comment_list.add(comment);
 
                     }

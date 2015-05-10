@@ -20,6 +20,14 @@ public class BaseComment implements Serializable{
     public BaseComment() {
     }
 
+    public BaseComment(String id, String owner_id, String tweet_id, String content, String created_at){
+        this.id = id;
+        this.owner_id = owner_id;
+        this.tweet_id = tweet_id;
+        this.content = "<p>" + content + "</p>";
+        this.created_at = created_at;
+    }
+
     public BaseComment(ResultSet resultSet){
         if (resultSet != null){
             try {

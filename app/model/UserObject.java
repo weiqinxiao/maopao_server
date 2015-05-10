@@ -128,13 +128,14 @@ public class UserObject implements Serializable{
         id = "7828";
     }
 
-    public UserObject(long id, String name, String headImgUrl){
+    public UserObject(long id, String name, String headImgUrl, long created_at){
         this.avatar = headImgUrl;
         this.id = id + "";
         this.name = name;
-        this.created_at = System.currentTimeMillis();
+        this.created_at = created_at;
     }
 
+    // TODO refactor: do not user Result to construct
     public UserObject(ResultSet resultSet){
         if (resultSet != null){
             try {
