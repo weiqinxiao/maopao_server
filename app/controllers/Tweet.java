@@ -8,6 +8,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import sun.rmi.runtime.Log;
 import util.DBUtil;
+import util.TextContentUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -180,6 +181,8 @@ public class Tweet extends Controller{
         content = param.get("content")[0];
         String device = param.get("device")[0];
         String owner_id = session("id");
+
+        content = TextContentUtil.processTweetContent(content);
 
         Connection connection = null;
         Statement statement = null;
