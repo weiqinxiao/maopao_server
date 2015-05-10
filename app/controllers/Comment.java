@@ -3,11 +3,13 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import model.BaseComment;
 import model.CommentListResult;
+import model.CommentResult;
 import play.db.DB;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import util.DBUtil;
+import util.TextContentUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jiangecho on 15/5/10.
@@ -55,5 +58,64 @@ public class Comment extends Controller{
         }
         //JsonNode jsonNode = Json.toJson(commentListResult);
         return ok(Json.toJson(commentListResult));
+    }
+
+    public static Result publishComment(long id){
+
+        CommentResult commentResult;
+        Map<String, String[]> param = request().body().asFormUrlEncoded();
+        String content = param.get("content")[0];
+
+        content = TextContentUtil.processComment(content);
+        String uid = session("id");
+
+        String insertComment = "INSERT INTO t_comment ( owner_id, create_at, tweet_id, content) VALUES (%s,  CURRENT_TIMESTAMP(), %s, '%s')";
+        insertComment = String.format(insertComment, uid, id, content);
+
+        String queryComment = "SELECT * FROM t_comment where id = ";
+
+        long rowId;
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+
+        try{
+            connection = DB.getConnection();
+            statement = connection.createStatement();
+            statement.executeUpdate(insertComment);
+            rowId = DBUtil.queryLastId(statement);
+
+            DBUtil.increaseOneById(statement, "t_tweet", "comment_count", id);
+
+            resultSet = statement.executeQuery(queryComment + rowId);
+            resultSet.next();
+            BaseComment comment = new BaseComment(resultSet);
+            commentResult = new CommentResult(0, comment);
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            commentResult = new CommentResult(-1, null);
+        }finally {
+            try {
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (statement != null){
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+
+            }catch (SQLException e){
+
+            }
+
+        }
+
+
+        return ok(Json.toJson(commentResult));
     }
 }

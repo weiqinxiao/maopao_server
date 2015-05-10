@@ -215,64 +215,6 @@ public class App extends Controller{
         return ok(Json.toJson(tweetResult));
     }
 
-    public static Result publishComment(long id){
-
-        CommentResult commentResult;
-        Map<String, String[]> param = request().body().asFormUrlEncoded();
-        String content = param.get("content")[0];
-        // TODO more fields;
-
-        String uid = session("id");
-
-        String insertComment = "INSERT INTO t_comment ( owner_id, create_at, tweet_id, content) VALUES (%s, now(), %s, '%s')";
-        insertComment = String.format(insertComment, uid, id, content);
-
-        String queryComment = "SELECT * FROM t_comment where id = ";
-
-        long rowId;
-
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-
-        try{
-            connection = DB.getConnection();
-            statement = connection.createStatement();
-            statement.executeUpdate(insertComment);
-            rowId = DBUtil.queryLastId(statement);
-
-            DBUtil.increaseOneById(statement, "t_tweet", "comment_count", id);
-
-            resultSet = statement.executeQuery(queryComment + rowId);
-            resultSet.next();
-            BaseComment comment = new BaseComment(resultSet);
-            commentResult = new CommentResult(0, comment);
-
-        }catch (SQLException e){
-            e.printStackTrace();
-            commentResult = new CommentResult(-1, null);
-        }finally {
-            try {
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (statement != null){
-                    statement.close();
-                }
-                if (connection != null){
-                    connection.close();
-                }
-
-            }catch (SQLException e){
-
-            }
-
-        }
-
-
-        return ok(Json.toJson(commentResult));
-    }
 
     public static Result qiniuToken(){
         return ok(QiniuUtil.getUploadToken());

@@ -19,15 +19,17 @@ public class TextContentUtil {
     }
 
     public static String processEmoji(String string){
-        String emojiPattern = "%3A([^\\\\])%3A";
-        String emojiHref = "<img class=\"emotion emoji\" src=\"https://coding.net/static/emojis/$1.png\" title=\"$1\"></p>";
+        //String emojiPattern = "%3A([^\\\\])%3A";
+        String emojiPattern = ":([a-zA-Z0-9_][a-zA-Z0-9_]*):";
+        String emojiHref = "<img class=\"emotion emoji\" src=\"https://coding.net/static/emojis/$1.png\" title=\"$1\">";
 
         string = string.replaceAll(emojiPattern, emojiHref);
         return string;
     }
 
     public static String processAt(String string){
-        String atPattern = "%40(.*)\\+";
+        //String atPattern = "%40(.*)\\+";
+        String atPattern = "@(.*)\\+";
         // TODO maybe the link should be something like: https://coding.net/u....
         // <a class=\"at-someone\" href=\"https://coding.net/u/dandelion\" rel=\"nofollow\">@dandelion</a>
 
