@@ -40,8 +40,9 @@ public class Maopao implements Serializable {
                 }
                 id = resultSet.getString("id");
                 owner_id = resultSet.getString("owner_id");
-                String tmp = "<p>" + resultSet.getString("content") + "</p>"; // TODO handle the content before insert into db
-                content = TextContentUtil.processMarkDownImageLink(tmp);
+//                String tmp = "<p>" + resultSet.getString("content") + "</p>"; // TODO handle the content before insert into db
+//                content = TextContentUtil.processMarkDownImageLink(tmp);
+                content = resultSet.getString("content");
                 created_at = resultSet.getString("create_at");
                 device = resultSet.getString("device");
                 comments = resultSet.getInt("comment_count");

@@ -42,6 +42,7 @@ public class TextContentUtil {
         if (tweetContent == null){
             return null;
         }
+        tweetContent = "<p>" + tweetContent + "</p>";
         tweetContent = processMarkDownImageLink(tweetContent);
         tweetContent = processAt(tweetContent);
         tweetContent = processEmoji(tweetContent);
