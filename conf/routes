@@ -6,12 +6,13 @@
 GET         /                               controllers.App.index
 #GET     /test/:str                          controllers.App.test(str:String)
 GET         /test                           controllers.App.test()
-GET         /api/tweet/public_tweets        controllers.App.publicTweets(last_id:Long ?=100, sort:String ?="time")
+GET         /api/tweet/public_tweets        controllers.Tweet.publicTweets(last_id:Long ?=100, sort:String ?="time")
 GET         /api/token                      controllers.App.qiniuToken()
 GET         /api/tweet/:id/comments         controllers.Comment.comments(id: Long, pageSize: Integer)
 
 
-POST        /api/tweet                      controllers.App.publishTweet()
+POST        /api/tweet                      controllers.Tweet.publishTweet()
+POST        /api/tweet/:tweetId/:type       controllers.Tweet.star(tweetId: Long, type: String)
 POST        /api/tweet/:id/comment          controllers.Comment.publishComment(id :Long)
 POST        /api/login                      controllers.User.login()
 

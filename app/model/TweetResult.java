@@ -13,4 +13,16 @@ public class TweetResult implements Serializable{
         this.code = code;
         this.data = maopao;
     }
+
+    public TweetResult(){
+        this.code = 0;
+    }
+
+    public void setCode(int code){
+        this.code = code;
+    }
+
+    public void setMaopao(Maopao maopao){
+        this.data = maopao;
+    }
 }

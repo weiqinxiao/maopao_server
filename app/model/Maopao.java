@@ -35,6 +35,9 @@ public class Maopao implements Serializable {
     public Maopao(ResultSet resultSet) {
         if (resultSet != null) {
             try {
+                if (resultSet.isBeforeFirst()){
+                    resultSet.next();
+                }
                 id = resultSet.getString("id");
                 owner_id = resultSet.getString("owner_id");
                 String tmp = "<p>" + resultSet.getString("content") + "</p>"; // TODO handle the content before insert into db

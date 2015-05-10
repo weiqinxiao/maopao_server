@@ -19,6 +19,7 @@ public class DBUtil {
 
     private static final String QUERY_BY = "SELECT * FROM %s WHERE %s = '%s'";
     private static final String INCREASE_COLUMN_VALUE_BY_ONE = "UPDATE %s SET %s = %s + 1 WHERE id = %s";
+    private static final String DECREASE_COLUMN_VALUE_BY_ONE = "UPDATE %s SET %s = %s - 1 WHERE id = %s";
 
     public static long queryLastId(Statement statement) throws SQLException {
         ResultSet resultSet = statement.executeQuery(QUERY_LAST_ID);
@@ -92,6 +93,11 @@ public class DBUtil {
      */
     public static void increaseOneById(Statement statement, String table, String columnName, long id) throws SQLException {
         String sql = String.format(INCREASE_COLUMN_VALUE_BY_ONE, table, columnName, columnName, id);
+        statement.execute(sql);
+    }
+
+    public static void decreaseOneById(Statement statement, String table, String columnName, long id) throws SQLException {
+        String sql = String.format(DECREASE_COLUMN_VALUE_BY_ONE, table, columnName, columnName, id);
         statement.execute(sql);
     }
 
