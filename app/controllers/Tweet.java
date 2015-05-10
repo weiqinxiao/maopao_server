@@ -6,6 +6,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import sun.rmi.runtime.Log;
 import util.DBUtil;
 
 import java.sql.Connection;
@@ -35,9 +36,11 @@ public class Tweet extends Controller{
         Statement maopaoStatement = null;
         Statement commentStatement = null;
         Statement likeUserStatement = null;
+        Statement ownerStatement = null;
         ResultSet maopaoResultSet = null;
         ResultSet commentResultSet = null;
         ResultSet likeUsersResultSet = null;
+        ResultSet ownerResultSet = null;
         long tweetId;
         long maxTweetId;
         String tableComment = "t_comment";
@@ -47,6 +50,7 @@ public class Tweet extends Controller{
             maopaoStatement = connection.createStatement();
             commentStatement = connection.createStatement();
             likeUserStatement = connection.createStatement();
+            ownerStatement = connection.createStatement();
 
             maxTweetId = DBUtil.queryMaxId(maopaoStatement, tableMaopao);
 
@@ -61,7 +65,12 @@ public class Tweet extends Controller{
             while (maopaoResultSet.next()){
                 maopao = new Maopao(maopaoResultSet);
                 tweetId = Long.parseLong(maopao.id);
-                maopao.owner = new UserObject();
+
+                String userSql = "SELECT * FROM t_user WHERE id = " + maopao.owner_id;
+                ownerResultSet = ownerStatement.executeQuery(userSql);
+                ownerResultSet.next();
+                maopao.owner = new UserObject(ownerResultSet);
+
                 if (maopao.likes > 0){
                     maopao.like_users = new ArrayList<UserObject>();
 
