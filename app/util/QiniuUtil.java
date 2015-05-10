@@ -11,6 +11,6 @@ public class QiniuUtil {
 
     public static String getUploadToken(){
         Auth auth = Auth.create(APP_KEY, APP_SECRET);
-        return auth.uploadToken("bucket");
+        return auth.uploadToken("maopao");
     }
 }
