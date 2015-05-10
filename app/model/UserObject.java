@@ -138,8 +138,14 @@ public class UserObject implements Serializable{
     public UserObject(ResultSet resultSet){
         if (resultSet != null){
             try {
-                // TODO
-                resultSet.getString("jo");
+                // TODO more fields
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String headImgUrl = resultSet.getString("head_url");
+
+                this.avatar = headImgUrl;
+                this.id = id;
+                this.name = name;
 
             }catch (SQLException e){
 

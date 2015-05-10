@@ -34,8 +34,10 @@ public class Tweet extends Controller{
         Connection connection = null;
         Statement maopaoStatement = null;
         Statement commentStatement = null;
+        Statement likeUserStatement = null;
         ResultSet maopaoResultSet = null;
         ResultSet commentResultSet = null;
+        ResultSet likeUsersResultSet = null;
         long tweetId;
         long maxTweetId;
         String tableComment = "t_comment";
@@ -44,6 +46,7 @@ public class Tweet extends Controller{
             connection = DB.getConnection();
             maopaoStatement = connection.createStatement();
             commentStatement = connection.createStatement();
+            likeUserStatement = connection.createStatement();
 
             maxTweetId = DBUtil.queryMaxId(maopaoStatement, tableMaopao);
 
@@ -57,16 +60,26 @@ public class Tweet extends Controller{
             maopaos = new ArrayList<Maopao>();
             while (maopaoResultSet.next()){
                 maopao = new Maopao(maopaoResultSet);
+                tweetId = Long.parseLong(maopao.id);
                 maopao.owner = new UserObject();
                 if (maopao.likes > 0){
                     maopao.like_users = new ArrayList<UserObject>();
-                    for (int i = 0; i < maopao.likes; i ++){
-                        // TODO the following line is just for testing
-                        maopao.like_users.add(maopao.owner);
+
+                    String sql = "SELECT * FROM t_user WHERE id IN (SELECT owner_id FROM t_like_tweet WHERE tweet_id = '%s')";
+                    sql = String.format(sql,  tweetId);
+                    likeUsersResultSet = likeUserStatement.executeQuery(sql);
+
+                    UserObject userObject;
+                    while (likeUsersResultSet.next()){
+                        userObject = new UserObject(likeUsersResultSet);
+                        maopao.like_users.add(userObject);
+                        if (userObject.id.equals(session("id"))){
+                            maopao.liked = true;
+                        }
                     }
+
                 }
                 if (maopao.comments > 0){
-                    tweetId = Long.parseLong(maopao.id);
                     maopao.comment_list = new ArrayList<BaseComment>();
                     BaseComment comment;
                     commentResultSet = DBUtil.queryBy(commentStatement, tableComment, "tweet_id", "" + tweetId);
@@ -101,6 +114,13 @@ public class Tweet extends Controller{
                 }
                 if (commentStatement != null){
                     commentStatement.close();
+                }
+
+                if (likeUsersResultSet != null){
+                    likeUsersResultSet.close();
+                }
+                if (likeUserStatement != null){
+                    likeUserStatement.close();
                 }
 
                 if (connection != null){

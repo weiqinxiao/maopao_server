@@ -12,7 +12,7 @@ GET         /api/tweet/:id/comments         controllers.Comment.comments(id: Lon
 
 
 POST        /api/tweet                      controllers.Tweet.publishTweet()
-POST        /api/tweet/:tweetId/:type       controllers.Tweet.star(tweetId: Long, type: String)
+POST        /api/tweet/:id/star/:type       controllers.Tweet.star(id: Long, type: String)
 POST        /api/tweet/:id/comment          controllers.Comment.publishComment(id :Long)
 POST        /api/login                      controllers.User.login()
 
