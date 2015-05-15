@@ -1,13 +1,14 @@
 package controllers;
 
 import model.UserObject;
+import play.db.DB;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import util.DBUtil;
 
-import java.sql.Date;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
@@ -26,14 +27,50 @@ public class User extends Controller{
         String openId = params.get("openId")[0];
         String name = params.get("name")[0];
         String headImgUrl = params.get("headImgUrl")[0];
+        long id = -1;
 
-        String sql = "INSERT INTO t_user(name, head_url, created_at, openid) VALUES('%s', '%s', CURRENT_TIMESTAMP(), '%s')";
-        sql = String.format(sql, name, headImgUrl, openId);
+        UserObject userObject = null;
 
-        long id = DBUtil.insert(sql);
-        UserObject userObject = new UserObject(id, name, headImgUrl, System.currentTimeMillis());
+        String querySql = "SELECT * FROM t_user WHERE openid = '%s'";
+        String insertSql = "INSERT INTO t_user(name, head_url, created_at, openid) VALUES('%s', '%s', CURRENT_TIMESTAMP(), '%s')";
+        querySql = String.format(querySql, openId);
+        insertSql = String.format(insertSql, name, headImgUrl, openId);
 
-        session("id", id + "");
+        Connection connection = DB.getConnection();
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(querySql);
+
+            if (resultSet.next()){
+                id = resultSet.getLong("id");
+            }else {
+                id = DBUtil.insert(insertSql);
+            }
+
+            userObject = new UserObject(id, name, headImgUrl, System.currentTimeMillis());
+            session("id", id + "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (statement != null){
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // TODO handle exception case
         return ok(Json.toJson(userObject));
     }
 }

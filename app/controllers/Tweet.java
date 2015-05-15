@@ -6,7 +6,6 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import sun.rmi.runtime.Log;
 import util.DBUtil;
 import util.TextContentUtil;
 
