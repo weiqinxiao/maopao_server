@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.tencent.xinge.XingeApp;
 import model.BaseComment;
 import model.CommentListResult;
 import model.CommentResult;
@@ -73,6 +74,7 @@ public class Comment extends Controller{
         insertComment = String.format(insertComment, uid, id, content);
 
         String queryComment = "SELECT * FROM t_comment where id = ";
+        String queryOwnId = "SELECT owner_id FROM t_tweet where id = " + id;
 
         long rowId;
 
@@ -94,6 +96,16 @@ public class Comment extends Controller{
             BaseComment comment = new BaseComment(resultSet);
             commentResult = new CommentResult(0, comment);
 
+            resultSet = statement.executeQuery(queryOwnId);
+            if (resultSet.next()){
+                String ownerId = resultSet.getString("owner_id");
+                // for android
+                // xg push
+                ownerId = "plank_" + ownerId;
+                XingeApp.pushAccountAndroid(2100112110, "9a4277af000f76b89d0f9d0c41f86e5c", "平板支撑", "有同学评论了你的冒泡~", ownerId);
+            }
+
+
         }catch (SQLException e){
             e.printStackTrace();
             commentResult = new CommentResult(-1, null);
@@ -114,7 +126,6 @@ public class Comment extends Controller{
             }
 
         }
-
 
         return ok(Json.toJson(commentResult));
     }
