@@ -46,7 +46,7 @@ public class Maopao implements Serializable {
 //                String tmp = "<p>" + resultSet.getString("content") + "</p>"; // TODO handle the content before insert into db
 //                content = TextContentUtil.processMarkDownImageLink(tmp);
                 content = resultSet.getString("content");
-                created_at = resultSet.getTimestamp("create_at").getTime() / 1000;
+                created_at = resultSet.getTimestamp("create_at").getTime();
                 device = resultSet.getString("device");
                 comments = resultSet.getInt("comment_count");
                 likes = resultSet.getInt("like_count");
