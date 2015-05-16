@@ -6,7 +6,9 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by cc191954 on 14-8-21.
@@ -44,7 +46,7 @@ public class Maopao implements Serializable {
 //                String tmp = "<p>" + resultSet.getString("content") + "</p>"; // TODO handle the content before insert into db
 //                content = TextContentUtil.processMarkDownImageLink(tmp);
                 content = resultSet.getString("content");
-                created_at = resultSet.getDate("create_at").getTime();
+                created_at = resultSet.getTimestamp("create_at").getTime() / 1000;
                 device = resultSet.getString("device");
                 comments = resultSet.getInt("comment_count");
                 likes = resultSet.getInt("like_count");

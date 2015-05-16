@@ -36,7 +36,7 @@ public class BaseComment implements Serializable{
                 tweet_id = resultSet.getString("tweet_id");
                 String tmp = "<p>" + resultSet.getString("content") + "</p>";
                 content = TextContentUtil.processMarkDownImageLink(tmp);
-                created_at = resultSet.getDate("create_at").getTime();
+                created_at = resultSet.getTimestamp("create_at").getTime() / 1000;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
