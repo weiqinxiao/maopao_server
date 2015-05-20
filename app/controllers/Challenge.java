@@ -1,6 +1,8 @@
 package controllers;
 
 import model.Record;
+import model.RecordList;
+import model.UserObject;
 import play.db.DB;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -9,7 +11,6 @@ import util.DBUtil;
 
 import java.sql.*;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
@@ -41,25 +42,43 @@ public class Challenge extends Controller{
 
     public static Result getTodayTopChallengeRecord(int topCount){
         String sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_record.start, t_record.end" +
-                "FROM t_user INNER JOIN t_record ON t_user.id = t_record.owner_id WHERE t_record.start > %l ORDER BY (t_record.end - t_record.start)" +
-                "DESC LIMIT %d";
+                " FROM t_user INNER JOIN t_record ON t_user.id = t_record.owner_id WHERE t_record.start > %d ORDER BY (t_record.end - t_record.start)" +
+                " DESC LIMIT %d";
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        long todayStartMillis = calendar.getTimeInMillis();
+        long todayStartMillis = calendar.getTime().getTime() / 1000;
         sql = String.format(sql, todayStartMillis, topCount);
 
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
 
+        UserObject userObject;
+        Record record;
+        RecordList recordList = new RecordList();
+        String uid, name, headImgUrl;
+        long start, end;
         try {
             connection = DB.getConnection();
             statement = connection.createStatement();
             resultSet = DBUtil.query(statement, sql);
 
-            // TODO
+            recordList.setCode(0);
+            while (resultSet.next()){
+                uid = resultSet.getString("id");
+                name = resultSet.getString("name");
+                headImgUrl = resultSet.getString("head_url");
+
+                start = resultSet.getLong("start");
+                end = resultSet.getLong("end");
+
+                userObject = new UserObject(Long.parseLong(uid), name, headImgUrl);
+                record = new Record(userObject, start, end);
+
+                recordList.addRecord(record);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -81,7 +100,7 @@ public class Challenge extends Controller{
 
         }
 
-        return ok();
+        return ok(Json.toJson(recordList));
     }
 
 

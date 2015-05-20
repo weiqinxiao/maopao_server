@@ -135,6 +135,14 @@ public class UserObject implements Serializable{
         this.created_at = created_at;
     }
 
+    // TODO
+    public UserObject(long id, String name, String headImgUrl){
+        this.avatar = headImgUrl;
+        this.id = id + "";
+        this.name = name;
+    }
+
+
     // TODO refactor: do not user Result to construct
     public UserObject(ResultSet resultSet){
         if (resultSet != null){

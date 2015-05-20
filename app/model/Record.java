@@ -13,6 +13,13 @@ public class Record {
         this.code = -1;
     }
 
+    public Record(UserObject owner, long startMillis, long endMillis){
+        this.code = 0;
+        this.owner = owner;
+        this.startMillis = startMillis;
+        this.endMillis = endMillis;
+    }
+
     public int getCode() {
         return code;
     }

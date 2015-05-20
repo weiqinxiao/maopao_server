@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ public class RecordList {
     public int code;
     List<Record> data;
 
-    public RecordList(){
+    public RecordList() {
         this.code = -1;
     }
 
@@ -19,6 +20,13 @@ public class RecordList {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public void addRecord(Record record) {
+        if (data == null) {
+            data = new ArrayList<>();
+        }
+        data.add(record);
     }
 
     public List<Record> getRecordList() {
