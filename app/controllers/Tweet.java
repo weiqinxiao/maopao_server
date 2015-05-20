@@ -181,6 +181,12 @@ public class Tweet extends Controller{
         String device = param.get("device")[0];
         String owner_id = session("id");
 
+        return publishTweet(owner_id, content, device);
+    }
+
+    private static Result publishTweet(String owner_id, String content, String device){
+        TweetResult tweetResult;
+
         content = TextContentUtil.processTweetContent(content);
 
         Connection connection = null;
@@ -227,6 +233,17 @@ public class Tweet extends Controller{
         }
 
         return ok(Json.toJson(tweetResult));
+
+    }
+
+    public static Result publishTweetByXiaoHao(){
+        Http.Request request = request();
+        Map<String, String[]> param = request.body().asFormUrlEncoded();
+        String id = param.get("id")[0];
+        String content = param.get("content")[0];
+        String device = param.get("device")[0];
+
+        return publishTweet(id, content, device);
     }
 
     public static Result star(long tweetId, String type){
