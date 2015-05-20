@@ -3,20 +3,21 @@
 # ~~~~
 
 # Home page
-GET         /                               controllers.App.index
+GET         /                                controllers.App.index
 #GET     /test/:str                          controllers.App.test(str:String)
-GET         /test                           controllers.App.test()
-GET         /api/tweet/public_tweets        controllers.Tweet.publicTweets(last_id:Long ?=100, sort:String ?="time")
-GET         /api/token                      controllers.App.qiniuToken()
-GET         /api/tweet/:id/comments         controllers.Comment.comments(id: Long, pageSize: Integer)
+GET         /test                            controllers.App.test()
+GET         /api/tweet/public_tweets         controllers.Tweet.publicTweets(last_id:Long ?=100, sort:String ?="time")
+GET         /api/token                       controllers.App.qiniuToken()
+GET         /api/tweet/:id/comments          controllers.Comment.comments(id: Long, pageSize: Integer)
+GET         /api/challenge/:topCount         controllers.Challenge.getTodayTopChallengeRecord(topCount:Int ?= 10)
 
-
-POST        /api/tweet                      controllers.Tweet.publishTweet()
-POST        /api/tweet/:id/star/:type       controllers.Tweet.star(id: Long, type: String)
-POST        /api/tweet/:id/comment          controllers.Comment.publishComment(id :Long)
-POST        /api/login                      controllers.User.login()
+POST        /api/tweet                       controllers.Tweet.publishTweet()
+POST        /api/tweet/:id/star/:type        controllers.Tweet.star(id: Long, type: String)
+POST        /api/tweet/:id/comment           controllers.Comment.publishComment(id :Long)
+POST        /api/login                       controllers.User.login()
+POST        /api/challenge/submit            controllers.Challenge.submitChallengeRecord()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                   controllers.Assets.at(path="/public", file)
+GET         /assets/*file                    controllers.Assets.at(path="/public", file)
 
     
