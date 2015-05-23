@@ -48,7 +48,8 @@ public class Challenge extends Controller{
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        long todayStartMillis = calendar.getTime().getTime() / 1000;
+        calendar.set(Calendar.MILLISECOND, 0);
+        long todayStartMillis = calendar.getTime().getTime();
         sql = String.format(sql, todayStartMillis, topCount);
 
         Connection connection = null;
