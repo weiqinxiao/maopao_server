@@ -70,7 +70,7 @@ public class Comment extends Controller{
         content = TextContentUtil.processComment(content);
         String uid = session("id");
 
-        String insertComment = "INSERT INTO t_comment ( owner_id, create_at, tweet_id, content) VALUES (%s,  CURRENT_TIMESTAMP(), %s, '%s')";
+        String insertComment = "INSERT INTO t_comment ( owner_id, create_at, tweet_id, content) VALUES (%s,  now(), %s, '%s')";
         insertComment = String.format(insertComment, uid, id, content);
 
         String queryComment = "SELECT * FROM t_comment where id = ";
