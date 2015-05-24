@@ -50,8 +50,10 @@ public class User extends Controller{
                 id = DBUtil.insert(insertSql);
             }
 
-            userObject = new UserObject(id, name, headImgUrl, System.currentTimeMillis());
-            session("id", id + "");
+            if (id > 0){
+                userObject = new UserObject(id, name, headImgUrl, System.currentTimeMillis());
+                session("id", id + "");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
