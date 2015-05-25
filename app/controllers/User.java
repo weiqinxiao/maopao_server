@@ -7,6 +7,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import util.DBUtil;
+import util.TextContentUtil;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -29,12 +30,13 @@ public class User extends Controller{
         String headImgUrl = params.get("headImgUrl")[0];
         long id = -1;
 
+        String nameWithOutNoneUnsupportChar = TextContentUtil.removeNonBmpUnicode(name);
         UserObject userObject = null;
 
         String querySql = "SELECT * FROM t_user WHERE openid = '%s'";
         String insertSql = "INSERT INTO t_user(name, head_url, created_at, openid) VALUES('%s', '%s', CURRENT_TIMESTAMP(), '%s')";
         querySql = String.format(querySql, openId);
-        insertSql = String.format(insertSql, name, headImgUrl, openId);
+        insertSql = String.format(insertSql, nameWithOutNoneUnsupportChar, headImgUrl, openId);
 
         Connection connection = DB.getConnection();
         Statement statement = null;
