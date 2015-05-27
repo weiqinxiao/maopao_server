@@ -10,6 +10,7 @@ GET         /api/tweet/public_tweets         controllers.Tweet.publicTweets(last
 GET         /api/token                       controllers.App.qiniuToken()
 GET         /api/tweet/:id/comments          controllers.Comment.comments(id: Long, pageSize: Integer)
 GET         /api/challenge/:topCount         controllers.Challenge.getTodayTopChallengeRecord(topCount: Integer)
+GET         /api/challenge/count             controllers.Challenge.getTodayChallengeCount()
 
 POST        /api/tweet                       controllers.Tweet.publishTweet()
 POST        /api/tweet_xiaohao               controllers.Tweet.publishTweetByXiaoHao()

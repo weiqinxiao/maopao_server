@@ -8,6 +8,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import util.DBUtil;
+import util.TimeUtil;
 
 import java.sql.*;
 import java.util.Calendar;
@@ -104,5 +105,44 @@ public class Challenge extends Controller{
         return ok(Json.toJson(recordList));
     }
 
+    public static Result getTodayChallengeCount(){
+        String sql = "SELECT count(1) FROM t_record WHERE start > %d";
+        long todayStartMillis = TimeUtil.getTodayStartMillis();
+        sql = String.format(sql, todayStartMillis);
+        long count = 0;
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DB.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                count = resultSet.getLong(1);
+                break;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (statement != null){
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+            }catch (SQLException e){
+
+            }
+
+        }
+
+        return ok(Long.toString(count + 100)); // haha, at least 100
+    }
 
 }
