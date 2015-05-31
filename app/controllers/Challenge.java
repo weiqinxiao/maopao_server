@@ -29,7 +29,7 @@ public class Challenge extends Controller{
 
         Record record = new Record();
         // TODO checkout uid
-        String sql = "INSERT INTO t_record(owner_id, start, end) VALUES('%s', %s, %s)";
+        String sql = "INSERT INTO t_challenge_record(owner_id, start, end) VALUES('%s', %s, %s)";
         sql = String.format(sql, uid, startMillis, endMillis);
         long rowId = DBUtil.insert(sql);
         if (rowId > -1){
@@ -42,8 +42,8 @@ public class Challenge extends Controller{
     }
 
     public static Result getTodayTopChallengeRecord(int topCount){
-        String sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_record.start, t_record.end" +
-                " FROM t_user INNER JOIN t_record ON t_user.id = t_record.owner_id WHERE t_record.start > %d ORDER BY (t_record.end - t_record.start)" +
+        String sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_challenge_record.start, t_challenge_record.end" +
+                " FROM t_user INNER JOIN t_challenge_record ON t_user.id = t_challenge_record.owner_id WHERE t_challenge_record.start > %d ORDER BY (t_challenge_record.end - t_challenge_record.start)" +
                 " DESC LIMIT %d";
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -106,7 +106,7 @@ public class Challenge extends Controller{
     }
 
     public static Result getTodayChallengeCount(){
-        String sql = "SELECT count(1) FROM t_record WHERE start > %d";
+        String sql = "SELECT count(1) FROM t_challenge_record WHERE start > %d";
         long todayStartMillis = TimeUtil.getTodayStartMillis();
         sql = String.format(sql, todayStartMillis);
         long count = 0;
