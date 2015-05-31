@@ -11,6 +11,7 @@ GET         /api/token                       controllers.App.qiniuToken()
 GET         /api/tweet/:id/comments          controllers.Comment.comments(id: Long, pageSize: Integer)
 GET         /api/challenge/:topCount         controllers.Challenge.getTodayTopChallengeRecord(topCount: Integer)
 GET         /api/challenge_count             controllers.Challenge.getTodayChallengeCount()
+GET         /api/train_count                 controllers.Train.getTodayFinishedTrainCount()
 
 POST        /api/tweet                       controllers.Tweet.publishTweet()
 POST        /api/tweet_xiaohao               controllers.Tweet.publishTweetByXiaoHao()
@@ -18,6 +19,7 @@ POST        /api/tweet/:id/star/:type        controllers.Tweet.star(id: Long, ty
 POST        /api/tweet/:id/comment           controllers.Comment.publishComment(id :Long)
 POST        /api/login                       controllers.User.login()
 POST        /api/challenge/submit            controllers.Challenge.submitChallengeRecord()
+POST        /api/train/submit                controllers.Train.submitTrainRecord()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                    controllers.Assets.at(path="/public", file)
