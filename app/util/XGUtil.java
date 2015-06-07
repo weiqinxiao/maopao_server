@@ -22,6 +22,8 @@ public class XGUtil {
         String tmp = "{\"tweetId\":%d}";
         String accountAndroid = "plank_" + account;
         message.setContent(String.format(tmp, tweetId));
-        return xingeApp.pushSingleAccount(0, accountAndroid, message);
+        message.setType(Message.TYPE_MESSAGE); // Attention: must
+        JSONObject result = xingeApp.pushSingleAccount(0, accountAndroid, message);
+        return result;
     }
 }
