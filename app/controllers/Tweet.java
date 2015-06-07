@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by jiangecho on 15/5/10.
  */
 public class Tweet extends Controller{
-    public static Result publicTweets(long last_id, String sort){
+    public static Result publicTweets(long last_id, String sort, int limit){
         String result = "";
         List<Maopao> maopaos = null;
         Maopao maopao;
@@ -30,6 +30,10 @@ public class Tweet extends Controller{
         String orderBy = "id";
         if ("hot".equals(sort)){
             orderBy = "comment_count";
+        }
+
+        if (limit <= 0){
+            limit = 30;
         }
 
         Connection connection = null;
@@ -55,9 +59,9 @@ public class Tweet extends Controller{
             maxTweetId = DBUtil.queryMaxId(maopaoStatement, tableMaopao);
 
             if (last_id > maxTweetId){
-                maopaoResultSet = DBUtil.queryLastRecord(maopaoStatement, tableMaopao, orderBy, 30);
+                maopaoResultSet = DBUtil.queryLastRecord(maopaoStatement, tableMaopao, orderBy, limit);
             }else {
-                maopaoResultSet = DBUtil.queryLessLastRecord(maopaoStatement, tableMaopao, orderBy, "" + last_id, 30);
+                maopaoResultSet = DBUtil.queryLessLastRecord(maopaoStatement, tableMaopao, orderBy, "" + last_id, limit);
             }
 
 

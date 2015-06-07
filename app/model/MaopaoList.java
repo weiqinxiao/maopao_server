@@ -17,7 +17,7 @@ public class MaopaoList implements Serializable{
     public void setData(List<Maopao> data) {
         this.data = data;
     }
-    public List<Maopao> getMaopaoList(){
-        return data;
-    }
+//    public List<Maopao> getMaopaoList(){
+//        return data;
+//    }
 }
