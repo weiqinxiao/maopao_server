@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.tencent.xinge.Message;
 import com.tencent.xinge.XingeApp;
 import model.BaseComment;
 import model.CommentListResult;
@@ -12,6 +13,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import util.DBUtil;
 import util.TextContentUtil;
+import util.XGUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -125,10 +127,7 @@ public class Comment extends Controller{
             resultSet = statement.executeQuery(queryOwnId);
             if (resultSet.next()){
                 String ownerId = resultSet.getString("owner_id");
-                // for android
-                // xg push
-                ownerId = "plank_" + ownerId;
-                XingeApp.pushAccountAndroid(2100112110, "9a4277af000f76b89d0f9d0c41f86e5c", "平板支撑", "有同学评论了你的冒泡~", ownerId);
+                XGUtil.pushCommentNotificationToSingelAccountAndroid(ownerId, id);
             }
 
 
