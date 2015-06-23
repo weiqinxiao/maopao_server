@@ -7,6 +7,7 @@ GET         /                                controllers.App.index
 #GET     /test/:str                          controllers.App.test(str:String)
 GET         /test                            controllers.App.test()
 GET         /api/tweet/public_tweets         controllers.Tweet.publicTweets(last_id:Long ?=100, sort:String ?="time", limit:Int ?= 30)
+GET         /api/tweet/private_tweets        controllers.PriviateTweet.privateTweets(last_id:Long ?=100, sort:String ?="time", limit:Int ?= 30)
 GET         /api/token                       controllers.App.qiniuToken()
 GET         /api/tweet/:id/comments          controllers.Comment.comments(id: Long, pageSize: Integer)
 GET         /api/challenge/:topCount         controllers.Challenge.getTodayTopChallengeRecord(topCount: Integer)
@@ -14,6 +15,7 @@ GET         /api/challenge_count             controllers.Challenge.getTodayChall
 GET         /api/train_count                 controllers.Train.getTodayFinishedTrainCount()
 
 POST        /api/tweet                       controllers.Tweet.publishTweet()
+POST        /api/private_tweet               controllers.PriviateTweet.publishPrivateTweet()
 POST        /api/tweet_xiaohao               controllers.Tweet.publishTweetByXiaoHao()
 POST        /api/tweet/:id/star/:type        controllers.Tweet.star(id: Long, type: String)
 POST        /api/tweet/:id/comment           controllers.Comment.publishComment(id :Long)

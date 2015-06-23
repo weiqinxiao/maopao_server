@@ -15,7 +15,9 @@ public class DBUtil {
     private static final String QUERY_MAX_ID = "SELECT MAX(ID) FROM ";
 
     private static final String QUERY_LAST_RECORD = "SELECT * FROM %s ORDER BY %s DESC LIMIT %s";
+    private static final String QUERY_LAST_RECORD_WITH_WHERE = "SELECT * FROM %s WHERE %s ORDER BY %s DESC LIMIT %s";
     private static final String QUERY_LESS_LAST_RECORD = "SELECT * FROM %s WHERE %s < %s ORDER BY %s DESC LIMIT %s";
+    private static final String QUERY_LESS_LAST_RECORD_WITH_WHERE = "SELECT * FROM %s WHERE %s < %s and %s ORDER BY %s DESC LIMIT %s";
 
     private static final String QUERY_BY = "SELECT * FROM %s WHERE %s = '%s'";
     private static final String INCREASE_COLUMN_VALUE_BY_ONE = "UPDATE %s SET %s = %s + 1 WHERE id = %s";
@@ -50,6 +52,12 @@ public class DBUtil {
         return resultSet;
     }
 
+    public static ResultSet queryLastRecord(Statement statement, String table, String where, String orderBy, int limit) throws SQLException {
+        String sql = String.format(QUERY_LAST_RECORD_WITH_WHERE, table, where, orderBy, limit);
+        ResultSet resultSet = statement.executeQuery(sql);
+        return resultSet;
+    }
+
     /**
      * orderBy only support the following types:
      * int, long and so on, which can compare with > or <
@@ -64,6 +72,12 @@ public class DBUtil {
      */
     public static ResultSet queryLessLastRecord(Statement statement, String table, String orderBy, String startValue, int limit) throws SQLException {
         String sql = String.format(QUERY_LESS_LAST_RECORD, table, orderBy, startValue, orderBy, limit);
+        ResultSet resultSet = statement.executeQuery(sql);
+        return resultSet;
+    }
+
+    public static ResultSet queryLessLastRecord(Statement statement, String table, String where, String orderBy, String startValue, int limit) throws SQLException {
+        String sql = String.format(QUERY_LESS_LAST_RECORD_WITH_WHERE, table, orderBy, startValue, where, orderBy, limit);
         ResultSet resultSet = statement.executeQuery(sql);
         return resultSet;
     }
