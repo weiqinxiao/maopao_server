@@ -20,6 +20,10 @@ import java.util.Map;
 /**
  * Created by jiangecho on 15/5/10.
  */
+
+// ATTENTION: in order to ensure the id between t_tweet and t_private_tweet is different,
+    // now the tmp solution is: the id of t_private_tweet start at 1000000000
+    // ALTER TABLE `t_private_tweet` AUTO_INCREMENT=1000000000;
 public class PriviateTweet extends Controller{
     public static Result privateTweets(long last_id, String sort, int limit){
         String result = "";
