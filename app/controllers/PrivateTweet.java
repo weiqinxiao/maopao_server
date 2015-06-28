@@ -196,8 +196,7 @@ public class PrivateTweet extends Controller{
 
         content = param.get("content")[0];
         String device = param.get("device")[0];
-        String owner_id = "123";
-        //String owner_id = session("id");
+        String owner_id = session("id");
 
         return publishPrivateTweet(owner_id, content, device);
     }
