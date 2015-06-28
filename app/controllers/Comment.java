@@ -117,7 +117,11 @@ public class Comment extends Controller{
             statement.executeUpdate(insertComment);
             rowId = DBUtil.queryLastId(statement);
 
-            DBUtil.increaseOneById(statement, "t_tweet", "comment_count", id);
+            String table = "t_tweet";
+            if (id >= PrivateTweet.PRIVATE_TWEET_START_ID){
+                table = PrivateTweet.PRIVATE_TWEET_TABLE_NAME;
+            }
+            DBUtil.increaseOneById(statement, table, "comment_count", id);
 
             resultSet = statement.executeQuery(queryComment + rowId);
             resultSet.next();

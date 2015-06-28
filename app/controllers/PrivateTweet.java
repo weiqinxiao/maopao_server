@@ -25,6 +25,8 @@ import java.util.Map;
     // now the tmp solution is: the id of t_private_tweet start at 1000000000
     // ALTER TABLE `t_private_tweet` AUTO_INCREMENT=1000000000;
 public class PrivateTweet extends Controller{
+    public static final long PRIVATE_TWEET_START_ID = 1000000000;
+    public static final String PRIVATE_TWEET_TABLE_NAME = "t_private_tweet";
     public static Result privateTweets(long last_id, String sort, int limit){
         String result = "";
         List<Maopao> maopaos = null;
