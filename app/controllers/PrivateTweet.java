@@ -24,7 +24,7 @@ import java.util.Map;
 // ATTENTION: in order to ensure the id between t_tweet and t_private_tweet is different,
     // now the tmp solution is: the id of t_private_tweet start at 1000000000
     // ALTER TABLE `t_private_tweet` AUTO_INCREMENT=1000000000;
-public class PriviateTweet extends Controller{
+public class PrivateTweet extends Controller{
     public static Result privateTweets(long last_id, String sort, int limit){
         String result = "";
         List<Maopao> maopaos = null;
@@ -249,60 +249,6 @@ public class PriviateTweet extends Controller{
 
         return ok(Json.toJson(tweetResult));
 
-    }
-
-
-    public static Result star(long tweetId, String type){
-        String sql;
-        if ("like".equals(type)){
-            sql = "INSERT INTO t_like_tweet ( owner_id, tweet_id, create_at) values ( %s, %s, now())";
-        }else {
-            sql = "DELETE FROM t_like_tweet WHERE owner_id = %s AND tweet_id = %s";
-        }
-        sql = String.format(sql, session("id"), tweetId);
-
-        Connection connection = DB.getConnection();
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        TweetResult tweetResult = new TweetResult();
-        try {
-            statement = connection.createStatement();
-            statement.execute(sql);
-
-            if ("like".equals(type)){
-                DBUtil.increaseOneById(statement, "t_tweet", "like_count", tweetId);
-            }else {
-                DBUtil.decreaseOneById(statement, "t_tweet", "like_count", tweetId);
-            }
-
-            resultSet = DBUtil.queryBy(statement, "t_tweet", "id", tweetId+"");
-
-            resultSet.next();
-            Maopao maopao = new Maopao(resultSet);
-            tweetResult.setCode(0);
-            tweetResult.setMaopao(maopao);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            tweetResult.setCode(-1);
-        }finally {
-            try {
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (statement != null){
-                    statement.close();
-                }
-                if (connection != null){
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return  ok(Json.toJson(tweetResult));
     }
 
 }
