@@ -194,7 +194,8 @@ public class PrivateTweet extends Controller{
 
         content = param.get("content")[0];
         String device = param.get("device")[0];
-        String owner_id = session("id");
+        String owner_id = "123";
+        //String owner_id = session("id");
 
         return publishPrivateTweet(owner_id, content, device);
     }
@@ -208,7 +209,7 @@ public class PrivateTweet extends Controller{
         Statement statement = null;
         ResultSet resultSet = null;
         String insertTweet = "INSERT INTO t_private_tweet (owner_id, create_at, sysversion, content, device) VALUES( '%s', now(), 'mac', '%s', '%s')";
-        String queryTweet = "SELECT * FROM t_tweet where id = ";
+        String queryTweet = "SELECT * FROM t_private_tweet where id = ";
         String queryLastRowId = "SELECT LAST_INSERT_ID()";
         insertTweet = String.format(insertTweet, owner_id, content, device);
         long rowId;
