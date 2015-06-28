@@ -268,13 +268,17 @@ public class Tweet extends Controller{
             statement = connection.createStatement();
             statement.execute(sql);
 
+            String table = "t_tweet";
+            if (tweetId >= PrivateTweet.PRIVATE_TWEET_START_ID){
+                table = PrivateTweet.PRIVATE_TWEET_TABLE_NAME;
+            }
             if ("like".equals(type)){
-                DBUtil.increaseOneById(statement, "t_tweet", "like_count", tweetId);
+                DBUtil.increaseOneById(statement, table, "like_count", tweetId);
             }else {
-                DBUtil.decreaseOneById(statement, "t_tweet", "like_count", tweetId);
+                DBUtil.decreaseOneById(statement, table, "like_count", tweetId);
             }
 
-            resultSet = DBUtil.queryBy(statement, "t_tweet", "id", tweetId+"");
+            resultSet = DBUtil.queryBy(statement, table, "id", tweetId+"");
 
             resultSet.next();
             Maopao maopao = new Maopao(resultSet);
