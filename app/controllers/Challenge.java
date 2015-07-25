@@ -22,15 +22,15 @@ public class Challenge extends Controller{
     public static Result submitChallengeRecord(){
         String uid = session("id");
 
+        Record record = new Record();
         if (uid == null || uid.length() == 0){
-            return null;
+            return ok(Json.toJson(record));
         }
         String startMillis, endMillis;
         Map<String, String[]> params = request().body().asFormUrlEncoded();
         startMillis = params.get("start")[0];
         endMillis = params.get("end")[0];
 
-        Record record = new Record();
         // TODO checkout uid
         String sql = "INSERT INTO t_challenge_record(owner_id, start, end) VALUES('%s', %s, %s)";
         sql = String.format(sql, uid, startMillis, endMillis);
