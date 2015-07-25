@@ -63,6 +63,9 @@ public class Train extends Controller{
     // Attention: when submit record, the owner field is null, because it is yourselef
     public static Result submitTrainRecord(){
         String uid = session("id");
+        if (uid == null || uid.length() == 0){
+            return null;
+        }
         String startMillis, endMillis;
         Map<String, String[]> params = request().body().asFormUrlEncoded();
         startMillis = params.get("start")[0];
