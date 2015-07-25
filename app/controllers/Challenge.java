@@ -11,7 +11,6 @@ import util.DBUtil;
 import util.TimeUtil;
 
 import java.sql.*;
-import java.util.Calendar;
 import java.util.Map;
 
 /**
@@ -42,71 +41,15 @@ public class Challenge extends Controller{
     }
 
     public static Result getTodayTopChallengeRecorad(int topCount){
+        String tableName = "t_challenge_record";
         long todayStartMillis = TimeUtil.getTodayStartMillis();
-        return getTopChallengeRecord(topCount, todayStartMillis);
+        return ControllerUtil.getTopRecord(tableName, topCount, todayStartMillis);
     }
 
     public static Result getCurrentWeekChallengeRecord(int topCount){
+        String tableName = "t_challenge_record";
         long currentWeekStartMillis = TimeUtil.getCurrentWeekStartMillis();
-        return getTopChallengeRecord(topCount, currentWeekStartMillis);
-    }
-
-    public static Result getTopChallengeRecord(int topCount, long startMillis){
-        String sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_challenge_record.start, t_challenge_record.end" +
-                " FROM t_user INNER JOIN t_challenge_record ON t_user.id = t_challenge_record.owner_id WHERE t_challenge_record.start > %d ORDER BY (t_challenge_record.end - t_challenge_record.start)" +
-                " DESC LIMIT %d";
-        sql = String.format(sql, startMillis, topCount);
-
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        UserObject userObject;
-        Record record;
-        RecordList recordList = new RecordList();
-        String uid, name, headImgUrl;
-        long start, end;
-        try {
-            connection = DB.getConnection();
-            statement = connection.createStatement();
-            resultSet = DBUtil.query(statement, sql);
-
-            recordList.setCode(0);
-            while (resultSet.next()){
-                uid = resultSet.getString("id");
-                name = resultSet.getString("name");
-                headImgUrl = resultSet.getString("head_url");
-
-                start = resultSet.getLong("start");
-                end = resultSet.getLong("end");
-
-                userObject = new UserObject(Long.parseLong(uid), name, headImgUrl);
-                record = new Record(userObject, start, end);
-
-                recordList.addRecord(record);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if (resultSet != null){
-                    resultSet.close();
-                    connection.close();
-                }
-                if (statement != null){
-                    statement.close();
-                }
-                if (connection != null){
-                    connection.close();
-                }
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
-
-        }
-
-        return ok(Json.toJson(recordList));
+        return ControllerUtil.getTopRecord(tableName, topCount, currentWeekStartMillis);
     }
 
     public static Result getTodayChallengeCount(){

@@ -81,4 +81,16 @@ public class Train extends Controller{
 
         return ok(Json.toJson(record));
     }
+
+    public static Result getTodayTopTrainRecorad(int topCount){
+        String tableName = "t_train_record";
+        long todayStartMillis = TimeUtil.getTodayStartMillis();
+        return ControllerUtil.getTopRecord(tableName, topCount, todayStartMillis);
+    }
+
+    public static Result getCurrentWeekTrainRecord(int topCount){
+        String tableName = "t_train_record";
+        long currentWeekStartMillis = TimeUtil.getCurrentWeekStartMillis();
+        return ControllerUtil.getTopRecord(tableName, topCount, currentWeekStartMillis);
+    }
 }
