@@ -41,17 +41,21 @@ public class Challenge extends Controller{
         return ok(Json.toJson(record));
     }
 
-    public static Result getTodayTopChallengeRecord(int topCount){
+    public static Result getTodayTopChallengeRecorad(int topCount){
+        long todayStartMillis = TimeUtil.getTodayStartMillis();
+        return getTopChallengeRecord(topCount, todayStartMillis);
+    }
+
+    public static Result getCurrentWeekChallengeRecord(int topCount){
+        long currentWeekStartMillis = TimeUtil.getCurrentWeekStartMillis();
+        return getTopChallengeRecord(topCount, currentWeekStartMillis);
+    }
+
+    public static Result getTopChallengeRecord(int topCount, long startMillis){
         String sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_challenge_record.start, t_challenge_record.end" +
                 " FROM t_user INNER JOIN t_challenge_record ON t_user.id = t_challenge_record.owner_id WHERE t_challenge_record.start > %d ORDER BY (t_challenge_record.end - t_challenge_record.start)" +
                 " DESC LIMIT %d";
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        long todayStartMillis = calendar.getTime().getTime();
-        sql = String.format(sql, todayStartMillis, topCount);
+        sql = String.format(sql, startMillis, topCount);
 
         Connection connection = null;
         Statement statement = null;
