@@ -28,12 +28,12 @@ public class ControllerUtil extends Controller {
 
         if ("t_train_record".equals(tableName)) {
             sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_train_record.start, t_train_record.end" +
-                    " FROM t_user INNER JOIN t_train_record ON t_user.id = t_train_record.owner_id WHERE t_train_record.start > %d ORDER BY (t_train_record.end - t_train_record.start)" +
+                    " FROM t_user INNER JOIN t_train_record ON t_user.id = t_train_record.owner_id WHERE t_train_record.start > %d GROUP BY t_user.id ORDER BY (t_train_record.end - t_train_record.start)" +
                     " DESC LIMIT %d";
 
         } else if ("t_challenge_record".equals(tableName)) {
             sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_challenge_record.start, t_challenge_record.end" +
-                    " FROM t_user INNER JOIN t_challenge_record ON t_user.id = t_challenge_record.owner_id WHERE t_challenge_record.start > %d ORDER BY (t_challenge_record.end - t_challenge_record.start)" +
+                    " FROM t_user INNER JOIN t_challenge_record ON t_user.id = t_challenge_record.owner_id WHERE t_challenge_record.start > %d GROUP BY t_user.id ORDER BY (t_challenge_record.end - t_challenge_record.start)" +
                     " DESC LIMIT %d";
 
         } else {
