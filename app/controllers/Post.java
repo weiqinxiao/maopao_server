@@ -42,7 +42,7 @@ public class Post extends Controller {
 
     public static Result getCollectedPosts(long lastId){
         String uid = session("id");
-        PostListInfo postListInfo = null;
+        PostListInfo postListInfo = new PostListInfo();
 
         if (uid == null || uid.length() == 0){
             return ok();
@@ -51,13 +51,24 @@ public class Post extends Controller {
         String sql = "SELECT * FROM t_post_collect WHERE owner_id = %s AND id < %d ORDER BY id DESC LIMIT 20";
         sql = String.format(sql, uid, lastId);
         try {
-            Statement statement = DB.getConnection().createStatement();
+            Connection connection = DB.getConnection();
+            Statement statement = connection.createStatement();
             //ResultSet result = DBUtil.queryLastRecord(statement, "t_post_collect", "owner_id = " + uid + " and id > " + lastId, "id", 10);
             ResultSet result = statement.executeQuery(sql);
             postListInfo = new PostListInfo(result);
-        } catch (SQLException e) {
+
+            if (statement != null){
+                statement.close();
+            }
+
+            if (connection != null){
+                connection.close();
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         return ok(Json.toJson(postListInfo));
 
