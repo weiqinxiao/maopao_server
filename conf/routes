@@ -17,6 +17,7 @@ GET         /api/train/week/:topCount            controllers.Train.getCurrentWee
 
 GET         /api/challenge_count                 controllers.Challenge.getTodayChallengeCount()
 GET         /api/train_count                     controllers.Train.getTodayFinishedTrainCount()
+GET         /api/post                            controllers.Post.getCollectedPosts(lastId:Long ?= 0)
 
 POST        /api/tweet                           controllers.Tweet.publishTweet()
 POST        /api/private_tweet                   controllers.PrivateTweet.publishPrivateTweet()
@@ -26,6 +27,7 @@ POST        /api/tweet/:id/comment               controllers.Comment.publishComm
 POST        /api/login                           controllers.User.login()
 POST        /api/challenge/submit                controllers.Challenge.submitChallengeRecord()
 POST        /api/train/submit                    controllers.Train.submitTrainRecord()
+POST        /api/post/collect                    controllers.Post.collectPost()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                        controllers.Assets.at(path="/public", file)
