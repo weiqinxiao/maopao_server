@@ -17,7 +17,7 @@ GET         /api/train/week/:topCount            controllers.Train.getCurrentWee
 
 GET         /api/challenge_count                 controllers.Challenge.getTodayChallengeCount()
 GET         /api/train_count                     controllers.Train.getTodayFinishedTrainCount()
-GET         /api/post                            controllers.Post.getCollectedPosts(lastId:Long ?= 0)
+GET         /api/post                            controllers.Post.getCollectedPosts(lastId:Long ?= 9999999)
 
 POST        /api/tweet                           controllers.Tweet.publishTweet()
 POST        /api/private_tweet                   controllers.PrivateTweet.publishPrivateTweet()

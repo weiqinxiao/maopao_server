@@ -33,7 +33,7 @@ public class Post extends Controller {
         String url = params.get("url")[0];
 
         //String sql = "INSERT INTO t_train_record(owner_id, start, end) VALUES('%s', %s, %s)";
-        String sql = "INSERT INTO t_post_collect(owner_id, title, date, url) VALUES('%s', '%s', '%s', '%s)";
+        String sql = "INSERT INTO t_post_collect(owner_id, title, date, url) VALUES(%s, '%s', '%s', '%s')";
         sql = String.format(sql, uid, title, date, url);
         long id = DBUtil.insert(sql);
 
@@ -48,9 +48,12 @@ public class Post extends Controller {
             return ok();
         }
 
+        String sql = "SELECT * FROM t_post_collect WHERE owner_id = %s AND id < %d ORDER BY id DESC LIMIT 20";
+        sql = String.format(sql, uid, lastId);
         try {
             Statement statement = DB.getConnection().createStatement();
-            ResultSet result = DBUtil.queryLastRecord(statement, "t_post_collect", "owner_id = " + uid + " and id > " + lastId, "id", 10);
+            //ResultSet result = DBUtil.queryLastRecord(statement, "t_post_collect", "owner_id = " + uid + " and id > " + lastId, "id", 10);
+            ResultSet result = statement.executeQuery(sql);
             postListInfo = new PostListInfo(result);
         } catch (SQLException e) {
             e.printStackTrace();
