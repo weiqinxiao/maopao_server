@@ -196,8 +196,13 @@ public class Tweet extends Controller{
         content = param.get("content")[0];
         String device = param.get("device")[0];
         String owner_id = session("id");
+        if (owner_id == null){
 
-        return publishTweet(owner_id, content, device);
+            tweetResult = new TweetResult(-1, null);
+            return ok(Json.toJson(tweetResult));
+        }else {
+            return publishTweet(owner_id, content, device);
+        }
     }
 
     private static Result publishTweet(String owner_id, String content, String device){
