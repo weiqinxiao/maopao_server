@@ -8,6 +8,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import util.DBUtil;
 import util.TextContentUtil;
+import util.TimeUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,13 +29,21 @@ public class Tweet extends Controller{
         MaopaoList maopaoList = new MaopaoList();
 
         String orderBy = "id";
+        String where = "";
         if ("hot".equals(sort)){
             orderBy = "like_count";
+            where = "create_at >= " + TimeUtil.getCurrentWeekStartMillis();
         }
+
+        if (ownerId > -1){
+            where += " and owner_id = " + ownerId;
+        }
+
 
         if (limit <= 0){
             limit = 30;
         }
+
 
         Connection connection = null;
         Statement maopaoStatement = null;
@@ -58,18 +67,14 @@ public class Tweet extends Controller{
 
             maxTweetId = DBUtil.queryMaxId(maopaoStatement, tableMaopao);
 
-            String where = null;
-            if (ownerId > -1){
-                where = "owner_id = " + ownerId;
-            }
             if (last_id > maxTweetId){
-                if (where == null){
+                if ("".equals(where)){
                     maopaoResultSet = DBUtil.queryLastRecord(maopaoStatement, tableMaopao, orderBy, limit);
                 }else {
                     maopaoResultSet = DBUtil.queryLastRecord(maopaoStatement, tableMaopao, where, orderBy, limit);
                 }
             }else {
-                if (where == null){
+                if ("".equals(where)){
                     maopaoResultSet = DBUtil.queryLessLastRecord(maopaoStatement, tableMaopao, orderBy, "" + last_id, limit);
                 }else {
                     maopaoResultSet = DBUtil.queryLessLastRecord(maopaoStatement, tableMaopao, where, orderBy, "" + last_id, limit);
