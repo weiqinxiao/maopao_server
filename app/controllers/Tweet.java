@@ -36,7 +36,11 @@ public class Tweet extends Controller{
         }
 
         if (ownerId > -1){
-            where += " and owner_id = " + ownerId;
+            if (where.length() > 0){
+                where += " and owner_id = " + ownerId;
+            }else {
+                where = " owner_id = " + ownerId;
+            }
         }
 
 
