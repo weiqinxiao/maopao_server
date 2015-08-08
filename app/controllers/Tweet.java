@@ -29,7 +29,7 @@ public class Tweet extends Controller{
 
         String orderBy = "id";
         if ("hot".equals(sort)){
-            orderBy = "comment_count";
+            orderBy = "like_count";
         }
 
         if (limit <= 0){
