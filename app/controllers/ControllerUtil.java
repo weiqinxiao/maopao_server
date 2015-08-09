@@ -38,7 +38,7 @@ public class ControllerUtil extends Controller {
 
         } else if ("t_challenge_record".equals(tableName)) {
             sql = "SELECT t_user.id, t_user.name, t_user.head_url, tmp.start, tmp.end FROM t_user " +
-                    "INNER JOIN (SELECT * FROM t_challenge_record WHERE start > %d ORDER BY (end - star) DESC) AS tmp " +
+                    "INNER JOIN (SELECT * FROM t_challenge_record WHERE start > %d ORDER BY (end - start) DESC) AS tmp " +
                     "ON t_user.id = tmp.owner_id GROUP BY t_user.id ORDER BY (tmp.end - tmp.start)" +
                     " DESC LIMIT %d";
 
