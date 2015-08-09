@@ -25,15 +25,21 @@ public class ControllerUtil extends Controller {
     // TODO add some common methods here, such as query the count and so on
     public static Result getTopRecord(String tableName, int topCount, long startMillis) {
         String sql;
+        //SELECT t_user.id, t_user.name, t_user.head_url, test.start, test.end FROM t_user
+        // INNER JOIN (select * from t_challenge_record order by (end - start) desc) as test
+        // ON t_user.id = test.owner_id WHERE test.start > 1438531200000 GROUP BY t_user.id
+        // ORDER BY (test.end - test.start) DESC LIMIT  10;
 
         if ("t_train_record".equals(tableName)) {
-            sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_train_record.start, t_train_record.end" +
-                    " FROM t_user INNER JOIN t_train_record ON t_user.id = t_train_record.owner_id WHERE t_train_record.start > %d GROUP BY t_user.id ORDER BY (t_train_record.end - t_train_record.start)" +
+            sql = "SELECT t_user.id, t_user.name, t_user.head_url, tmp.start, tmp.end FROM t_user " +
+                    "INNER JOIN (SELECT * FROM t_train_record WHERE start > %d ORDER BY (end - start) DESC) AS tmp " +
+                    "ON t_user.id = tmp.owner_id  GROUP BY t_user.id ORDER BY (tmp.end - tmp.start)" +
                     " DESC LIMIT %d";
 
         } else if ("t_challenge_record".equals(tableName)) {
-            sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_challenge_record.start, t_challenge_record.end" +
-                    " FROM t_user INNER JOIN t_challenge_record ON t_user.id = t_challenge_record.owner_id WHERE t_challenge_record.start > %d GROUP BY t_user.id ORDER BY (t_challenge_record.end - t_challenge_record.start)" +
+            sql = "SELECT t_user.id, t_user.name, t_user.head_url, tmp.start, tmp.end FROM t_user " +
+                    "INNER JOIN (SELECT * FROM t_challenge_record WHERE start > %d ORDER BY (end - star) DESC) AS tmp " +
+                    "ON t_user.id = tmp.owner_id GROUP BY t_user.id ORDER BY (tmp.end - tmp.start)" +
                     " DESC LIMIT %d";
 
         } else {

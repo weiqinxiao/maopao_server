@@ -6,6 +6,7 @@ import play.mvc.*;
 import play.db.*;
 import util.DBUtil;
 import util.QiniuUtil;
+import util.TimeUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class App extends Controller{
 
     public static Result index(){
-       return ok("HELLO world");
+       return ok("HELLO world:  " + TimeUtil.getCurrentWeekStartMillis() + " " + TimeUtil.getTodayStartMillis());
     }
 
     public static Result test(){
