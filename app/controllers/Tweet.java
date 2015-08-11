@@ -32,7 +32,7 @@ public class Tweet extends Controller{
         String where = "";
         if ("hot".equals(sort)){
             orderBy = "like_count";
-            where = "WEEKOFYEAR(create_at) = WEEKOFYEAR(now())";
+            where = "WEEKOFYEAR(create_at) = WEEKOFYEAR(now()) and owner_id != 2 ";
         }
 
         if (ownerId > -1){
