@@ -34,6 +34,7 @@ public class Post extends Controller {
 
         //String sql = "INSERT INTO t_train_record(owner_id, start, end) VALUES('%s', %s, %s)";
         String sql = "INSERT INTO t_post_collect(owner_id, title, date, url) VALUES(%s, '%s', '%s', '%s')";
+        title = title.replaceAll("'", "''");
         sql = String.format(sql, uid, title, date, url);
         long id = DBUtil.insert(sql);
 

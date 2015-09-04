@@ -212,6 +212,8 @@ public class PrivateTweet extends Controller{
         String insertTweet = "INSERT INTO t_private_tweet (owner_id, create_at, sysversion, content, device) VALUES( '%s', now(), 'mac', '%s', '%s')";
         String queryTweet = "SELECT * FROM t_private_tweet where id = ";
         String queryLastRowId = "SELECT LAST_INSERT_ID()";
+        content = content.replaceAll("'", "''");
+        device = device.replaceAll("'", "''");
         insertTweet = String.format(insertTweet, owner_id, content, device);
         long rowId;
         try {

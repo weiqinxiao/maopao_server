@@ -225,6 +225,8 @@ public class Tweet extends Controller{
         String insertTweet = "INSERT INTO t_tweet (owner_id, create_at, sysversion, content, device, clansid) VALUES( '%s', now(), 'mac', '%s', '%s', 1)";
         String queryTweet = "SELECT * FROM t_tweet where id = ";
         String queryLastRowId = "SELECT LAST_INSERT_ID()";
+        content = content.replaceAll("'", "''");
+        device = device.replaceAll("'", "''");
         insertTweet = String.format(insertTweet, owner_id, content, device);
         long rowId;
         try {
