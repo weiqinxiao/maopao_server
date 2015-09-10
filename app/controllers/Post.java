@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -29,8 +30,15 @@ public class Post extends Controller {
 
         Map<String, String[]> params = request().body().asFormUrlEncoded();
         String title = params.get("title")[0];
-        String date = params.get("date")[0];
         String url = params.get("url")[0];
+
+        String dateArray[] = params.get("date");
+        String date;
+        if (dateArray != null){
+            date = dateArray[0];
+        }else {
+            date = new Date().toString();
+        }
 
         //String sql = "INSERT INTO t_train_record(owner_id, start, end) VALUES('%s', %s, %s)";
         String sql = "INSERT INTO t_post_collect(owner_id, title, date, url) VALUES(%s, '%s', '%s', '%s')";
