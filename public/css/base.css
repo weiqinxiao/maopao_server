@@ -1,0 +1,9 @@
+﻿/* CSS Document */
+@charset "utf-8";
+body{ margin:0; padding:0;background: #FAFAFA;position:relative;}
+*{margin:0;padding:0;list-style-type:none; border:none; outline:none; font-style:normal; font-weight:normal; font-family:"微软雅黑";}
+a{ text-decoration:none;color: #000;}
+img{ vertical-align:middle;}
+.fl{ float:left;}
+.fr{ float:right;}
+.clearfix{ clear:both;}

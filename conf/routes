@@ -4,6 +4,9 @@
 
 # Home page
 GET         /                                    controllers.App.index
+GET         /public/*file                        controllers.Assets.at(path = "public", file)
+GET         /download                            controllers.Assets.at(path = "public", file = "download.html")
+
 #GET     /test/:str                          controllers.App.test(str:String)
 GET         /test                                controllers.App.test()
 GET         /api/tweet/public_tweets             controllers.Tweet.publicTweets(last_id:Long ?=9999999, sort:String ?="time", limit:Int ?= 30, ownerId:Long ?= -1)

@@ -1,0 +1,64 @@
+﻿
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="平板支撑下载,平板支撑免费下载"/>
+    <meta name="description" content="本页提供平板支撑正式版本下载,平板支撑测试版本下载,以及平板支撑的相关介绍及软件截图,你可以通过本页方便快捷的下载平板支撑"/>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1 user-scalable=0, minimal-ui"/>
+    <meta http-equiv="Cache-Control" content="private">
+    <meta http-equiv="expires" content="43200">
+    <title>平板支撑</title>
+	<link rel="stylesheet" href="./css/base.css"/>
+	<link rel="stylesheet" href="./css/reset-mobile.min.css"/>
+	<link rel="stylesheet" href="./css/style.css"/>
+    <style>
+        *{ margin: 0; padding: 0; font-family: "微软雅黑", "黑体";}
+		body{background:#2d979e;}
+		.wapper{width:320px;}
+		.plank-logo p{margin: 0 auto;width: 100px; color: #fff;font-size: 22px}
+		.plank-logo img{width:130px;margin:100px auto 0;display:block;}
+		.plank-download{width:200px;border:2px solid #fff;margin:140px auto;border-radius:5px;text-align:center;color:#fff;height:50px;padding:8px 0 0;font-size:20px;letter-spacing: 3px;}
+		.plank-download a{color:#fff;}
+	</style>
+
+	<!--微信分享，显示标题、图片-->
+	<script src="http://cdn.bootcss.com/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="http://7u2j7v.com1.z0.glb.clouddn.com/weixin-pocdoc.js"></script>
+    <script type="text/javascript" src="http://7xllr2.com1.z0.glb.clouddn.com/download.js"></script>
+	<script>
+		$(document).ready(function(){
+			//微信分享的时候，显示图片、标题及简介
+			var imgUrl = "http://7u2j7v.com1.z0.glb.clouddn.com/coach-t.png",
+					lineLink = window.location.href,
+					shareTitle = '下载平板支撑，和大家一起挑战平板支撑',
+					descContent = "Android版本下载地址";
+			weixin(imgUrl,lineLink,shareTitle,descContent);
+			
+			//页面缩放
+			window.winWidth = $(window).width()/320;
+			$('.wapper').css("zoom", winWidth).fadeIn(300);
+		});
+	</script>
+</head>
+
+<body>
+	<div class="wapper">
+		<div class="plank-logo">
+			<img class='plank-logo-img' src="./images/logo.png"/>
+			<p>平板支撑</p>
+		</div>
+		<div class='plank-download'>
+			<a href="http://7xj08q.com1.z0.glb.clouddn.com/3_0_2plank-noad-release.apk ">立即下载</a>
+		</div>
+	</div>
+
+
+
+</body>
+</html>

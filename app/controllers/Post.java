@@ -32,7 +32,7 @@ public class Post extends Controller {
         String title = params.get("title")[0];
         String url = params.get("url")[0];
 
-        String dateArray[] = params.get("date");
+        String dateArray[] = params.get("date"); // optional
         String date;
         if (dateArray != null){
             date = dateArray[0];
