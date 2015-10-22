@@ -1,22 +1,15 @@
 package controllers;
 
-import model.*;
-import play.libs.Json;
-import play.mvc.*;
-import play.db.*;
-import util.DBUtil;
+import play.db.DB;
+import play.mvc.Controller;
+import play.mvc.Result;
 import util.QiniuUtil;
 import util.TimeUtil;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 
 /**

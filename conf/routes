@@ -38,4 +38,5 @@ GET         /images/*file                        controllers.Assets.at(path = "/
 GET         /css/*file                           controllers.Assets.at(path = "/public/css", file)
 GET         /js/*file                            controllers.Assets.at(path = "/public/js", file)
 
-    
+#for wx
+GET         /wx                                  controllers.WxController.checkSignature()
