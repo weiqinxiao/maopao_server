@@ -95,7 +95,7 @@ public class WxController extends Controller {
 
         WxMpXmlOutMessage outMessage = WxMpXmlOutMessage.TEXT()
                 .content("平板君正在努力开发中...")
-                .fromUser("from jiangyingji")
+                .fromUser(inMessage.getToUserName())
                 .toUser(inMessage.getFromUserName())
                 .build();
 
