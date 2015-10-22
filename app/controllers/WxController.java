@@ -1,11 +1,13 @@
 package controllers;
 
+import me.chanjar.weixin.common.util.StringUtils;
+import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import org.apache.commons.codec.digest.DigestUtils;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import java.security.Signature;
 import java.util.Arrays;
 
 /**
@@ -42,13 +44,14 @@ public class WxController extends Controller {
 
     /**
      * 将字节数组转换为十六进制字符串
+     *
      * @param digest
      * @return
      */
     private static String byteToStr(byte[] digest) {
         // TODO Auto-generated method stub
         String strDigest = "";
-        for(int i = 0; i < digest.length; i++){
+        for (int i = 0; i < digest.length; i++) {
             strDigest += byteToHexStr(digest[i]);
         }
         return strDigest;
@@ -56,6 +59,7 @@ public class WxController extends Controller {
 
     /**
      * 将字节转换为十六进制字符串
+     *
      * @param b
      * @return
      */
@@ -69,4 +73,34 @@ public class WxController extends Controller {
         String s = new String(tempArr);
         return s;
     }
+
+    public static Result handleMessage() {
+        Http.Request request = request();
+        String encryptType = StringUtils.isBlank(request.getQueryString("encrypt_type")) ?
+                "raw" : request.getQueryString("encrypt_type");
+        WxMpXmlMessage inMessage = null;
+        if ("raw".equals(encryptType)) {
+            // 明文传输的消息
+            inMessage = WxMpXmlMessage.fromXml(request.body().asText());
+        } else if ("aes".equals(encryptType)) {
+            // TODO
+            // 是aes加密的消息
+//            String msgSignature = request.getQueryString("msg_signature");
+//            inMessage = WxMpXmlMessage.fromEncryptedXml(request.getInputStream(), wxMpConfigStorage, timestamp, nonce, msgSignature);
+        } else {
+            // TODO
+//            response.getWriter().println("不可识别的加密类型");
+//            return;
+        }
+
+        WxMpXmlOutMessage outMessage = WxMpXmlOutMessage.TEXT()
+                .content("平板君正在努力开发中...")
+                .fromUser("from jiangyingji")
+                .toUser(inMessage.getFromUserName())
+                .build();
+
+        return ok(outMessage.toXml());
+
+    }
+
 }

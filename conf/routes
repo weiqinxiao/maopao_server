@@ -40,3 +40,4 @@ GET         /js/*file                            controllers.Assets.at(path = "/
 
 #for wx
 GET         /wx                                  controllers.WxController.checkSignature()
+POST        /wx                                  controllers.WxController.handleMessage()
