@@ -4,6 +4,9 @@ import me.chanjar.weixin.common.util.StringUtils;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -81,7 +84,9 @@ public class WxController extends Controller {
         WxMpXmlMessage inMessage = null;
         if ("raw".equals(encryptType)) {
             // 明文传输的消息
-            inMessage = WxMpXmlMessage.fromXml(request.body().asText());
+            Document document = request.body().asXml();
+            String xml = getStringFromDoc(document);
+            inMessage = WxMpXmlMessage.fromXml(xml);
         } else if ("aes".equals(encryptType)) {
             // TODO
             // 是aes加密的消息
@@ -101,6 +106,12 @@ public class WxController extends Controller {
 
         return ok(outMessage.toXml());
 
+    }
+
+    public static String getStringFromDoc(org.w3c.dom.Document doc)    {
+        DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
+        LSSerializer lsSerializer = domImplementation.createLSSerializer();
+        return lsSerializer.writeToString(doc);
     }
 
 }
