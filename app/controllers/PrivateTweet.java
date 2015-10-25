@@ -36,6 +36,7 @@ public class PrivateTweet extends Controller{
         String uid = session("id");
 
         if (uid == null || uid.length() == 0){
+            maopaoList.setCode(1000);
             return ok(Json.toJson(maopaoList));
         }
 
@@ -197,6 +198,10 @@ public class PrivateTweet extends Controller{
         content = param.get("content")[0];
         String device = param.get("device")[0];
         String owner_id = session("id");
+
+        if (owner_id == null || owner_id.length() == 0){
+            return ok(Json.toJson(new TweetResult(1000, null)));
+        }
 
         return publishPrivateTweet(owner_id, content, device);
     }

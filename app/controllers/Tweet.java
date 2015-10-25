@@ -207,7 +207,7 @@ public class Tweet extends Controller{
         String owner_id = session("id");
         if (owner_id == null){
 
-            tweetResult = new TweetResult(-1, null);
+            tweetResult = new TweetResult(1000, null);
             return ok(Json.toJson(tweetResult));
         }else {
             return publishTweet(owner_id, content, device);
@@ -279,6 +279,10 @@ public class Tweet extends Controller{
     }
 
     public static Result star(long tweetId, String type){
+        String owner_id = session("id");
+        if (owner_id == null || owner_id.length() == 0){
+            return ok(Json.toJson(new TweetResult(1000, null)));
+        }
         String sql;
         if ("like".equals(type)){
             sql = "INSERT INTO t_like_tweet ( owner_id, tweet_id, create_at) values ( %s, %s, now())";

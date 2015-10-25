@@ -97,6 +97,10 @@ public class Comment extends Controller{
 
         content = TextContentUtil.processComment(content);
         String uid = session("id");
+        if (uid == null || uid.length() == 0){
+            commentResult = new CommentResult(1000, null);
+            return ok(Json.toJson(commentResult));
+        }
 
         String insertComment = "INSERT INTO t_comment ( owner_id, create_at, tweet_id, content) VALUES (%s,  now(), %s, '%s')";
         content = content.replaceAll("'", "''");
