@@ -49,13 +49,13 @@ public class Sync extends Controller {
 
         // t_train and t_challenge 用户存储用户每天的数据，不是每次的数据
         String table;
-        if (syncRecordList.getTable().equals("t_train")) {
+        if (syncRecordList.getTable().equals("train")) {
             table = "t_train";
         } else {
             table = "t_challenge";
         }
 
-        final String sql = "INSERT INTO " + table + " (owner_id, date, duration) VALUES('%s', %s, %d) ON DUPLICATE KEY UPDATE duration = %d";
+        final String sql = "INSERT INTO " + table + " (owner_id, date, duration) VALUES('%s', '%s', %d) ON DUPLICATE KEY UPDATE duration = %d";
         String tmp;
         List<String> sqls = new ArrayList<>();
         for (SyncRecord record : syncRecordList.getRecords()) {

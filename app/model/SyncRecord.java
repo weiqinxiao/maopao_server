@@ -4,10 +4,12 @@ package model;
  * Created by jiangecho on 15/10/25.
  */
 public class SyncRecord {
+    private int id;
     private String date;
     private long duration;
 
-    public SyncRecord(String date, long duration) {
+    public SyncRecord(int id, String date, long duration) {
+        this.id = id;
         this.date = date;
         this.duration = duration;
     }
@@ -15,6 +17,13 @@ public class SyncRecord {
     public SyncRecord() {
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getDate() {
         return date;
