@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * Created by jiangecho on 15/5/3.
@@ -38,7 +39,6 @@ public class DBUtil {
     }
 
     /**
-     *
      * @param statement
      * @param table
      * @param orderBy
@@ -99,6 +99,7 @@ public class DBUtil {
 
     /**
      * 把某个字段加1
+     *
      * @param statement
      * @param table
      * @param columnName
@@ -115,10 +116,10 @@ public class DBUtil {
         statement.execute(sql);
     }
 
-    public static void updateColumnById(Statement statement, String table, String columnName, String columnNewValue, long id){
+    public static void updateColumnById(Statement statement, String table, String columnName, String columnNewValue, long id) {
     }
 
-    public static long insert(String sql){
+    public static long insert(String sql) {
         Connection connection = DB.getConnection();
         Statement statement = null;
         long id = -1;
@@ -128,16 +129,45 @@ public class DBUtil {
             id = queryLastId(statement);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 statement.close();
                 connection.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
 
             }
         }
 
         return id;
+    }
+
+    public static int bulkInsert(List<String> insertSql) {
+        if (insertSql == null || insertSql.size() == 0) {
+            return -1;
+        }
+
+        int count = -1;
+        Connection connection = DB.getConnection();
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            for (String sql : insertSql) {
+                statement.addBatch(sql);
+            }
+            int[] result = statement.executeBatch();
+            count = result == null ? 0 : result.length;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return count;
     }
 
     public static ResultSet query(Statement statement, String sql) throws SQLException {

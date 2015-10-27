@@ -29,6 +29,7 @@ POST        /api/login                           controllers.User.login()
 POST        /api/challenge/submit                controllers.Challenge.submitChallengeRecord()
 POST        /api/train/submit                    controllers.Train.submitTrainRecord()
 POST        /api/post/collect                    controllers.Post.collectPost()
+POST        /api/sync/upload/train                      controllers.Sync.upload()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                        controllers.Assets.at(path="/public", file)

@@ -1,5 +1,6 @@
 package controllers;
 
+import constant.Constant;
 import model.Record;
 import model.RecordList;
 import model.UserObject;
@@ -24,6 +25,7 @@ public class Challenge extends Controller{
 
         Record record = new Record();
         if (uid == null || uid.length() == 0){
+            record.setCode(Constant.UN_LOGIN);
             return ok(Json.toJson(record));
         }
         String startMillis, endMillis;
