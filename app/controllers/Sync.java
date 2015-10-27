@@ -42,6 +42,7 @@ public class Sync extends Controller {
 
 
         String uid = session("id");
+        //String uid = "1";
         if (uid == null || uid.length() == 0) {
             result.setCode(Constant.UN_LOGIN);
             return ok(Json.toJson(result));
@@ -73,8 +74,8 @@ public class Sync extends Controller {
 
     //http://localhost:9000/api/sync/download/t_train?limit=1
     public static Result download(String table, int limit) {
-        //String owner_id = session("id");
-        String owner_id = "1";
+        String owner_id = session("id");
+        //String owner_id = "1";
         SyncRecordList syncRecordList = new SyncRecordList();
         if (owner_id == null || owner_id.length() == 0) {
             syncRecordList.setCode(Constant.UN_LOGIN);
