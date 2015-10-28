@@ -40,8 +40,8 @@ public class Sync extends Controller {
             return ok(Json.toJson(result));
         }
 
-        //String uid = session("id");
-        String uid = "100000";
+        String uid = session("id");
+        //String uid = "100000";
         if (uid == null || uid.length() == 0) {
             result.setCode(Constant.UN_LOGIN);
             return ok(Json.toJson(result));
@@ -115,7 +115,7 @@ public class Sync extends Controller {
     //http://localhost:9000/api/sync/download/t_train?limit=1
     public static Result downloadDayRecord(String table, int limit) {
         String owner_id = session("id");
-        //String owner_id = "1";
+        //String owner_id = "100000";
         SyncRecordList syncRecordList = new SyncRecordList();
         if (owner_id == null || owner_id.length() == 0) {
             syncRecordList.setCode(Constant.UN_LOGIN);
@@ -126,7 +126,7 @@ public class Sync extends Controller {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            String sql = "SELECT date, duration from " + table + " WHERE owner_id = 1 order BY id DESC limit " + limit;
+            String sql = "SELECT date, duration from " + table + " WHERE owner_id = " + owner_id + " order BY id DESC limit " + limit;
             ResultSet resultSet = statement.executeQuery(sql);
             SyncRecord syncRecord;
             while (resultSet.next()) {
