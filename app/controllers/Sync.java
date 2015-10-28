@@ -40,17 +40,24 @@ public class Sync extends Controller {
             return ok(Json.toJson(result));
         }
 
-        String uid = session("id");
-        //String uid = "1";
+        //String uid = session("id");
+        String uid = "100000";
         if (uid == null || uid.length() == 0) {
             result.setCode(Constant.UN_LOGIN);
             return ok(Json.toJson(result));
         }
 
-
+        String table = syncRecordList.getTable();
+        switch (table) {
+            case "train":
+            case "challenge":
+                return insertDayRecord(uid, syncRecordList);
+            default:
+                return insertDetailRecord(uid, syncRecordList);
+        }
     }
 
-    private Result insertDayRecord(String uid, SyncRecordList syncRecordList) {
+    private static Result insertDayRecord(String uid, SyncRecordList syncRecordList) {
         // t_train and t_challenge 用户存储用户每天的数据，不是每次的数据
         String table;
         if (syncRecordList.getTable().equals("train")) {
@@ -77,7 +84,7 @@ public class Sync extends Controller {
         return ok(Json.toJson(result));
     }
 
-    private Result insertDetailRecord(String uid, SyncRecordList syncRecordList) {
+    private static Result insertDetailRecord(String uid, SyncRecordList syncRecordList) {
         // t_train_record and t_challenge_record 用户存储用户每天的数据，不是每次的数据
         String table;
         if (syncRecordList.getTable().equals("trainDetail")) {
@@ -91,7 +98,7 @@ public class Sync extends Controller {
         String tmp;
         List<String> sqls = new ArrayList<>();
         for (SyncRecord record : syncRecordList.getRecords()) {
-            tmp = String.format(sql, uid, record.getDate(), record.getStartMillis(), record.getEndMillis());
+            tmp = String.format(sql, uid, record.getStartMillis(), record.getEndMillis());
             sqls.add(tmp);
         }
 
