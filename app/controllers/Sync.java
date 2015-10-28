@@ -24,6 +24,14 @@ import java.util.List;
  */
 public class Sync extends Controller {
     public static Result upload() {
+        String uid = session("id");
+        //String uid = "100000";
+        SyncRecordList result = new SyncRecordList();
+        if (uid == null || uid.length() == 0) {
+            result.setCode(Constant.UN_LOGIN);
+            return ok(Json.toJson(result));
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = request().body().asJson();
         SyncRecordList syncRecordList = null;
@@ -33,19 +41,11 @@ public class Sync extends Controller {
             e.printStackTrace();
         }
 
-        SyncRecordList result = new SyncRecordList();
-
         if (syncRecordList == null || syncRecordList.getRecords() == null || syncRecordList.getRecords().size() == 0) {
             result.setCode(0);
             return ok(Json.toJson(result));
         }
 
-        String uid = session("id");
-        //String uid = "100000";
-        if (uid == null || uid.length() == 0) {
-            result.setCode(Constant.UN_LOGIN);
-            return ok(Json.toJson(result));
-        }
 
         String table = syncRecordList.getTable();
         switch (table) {
