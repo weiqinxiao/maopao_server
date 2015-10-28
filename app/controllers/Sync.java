@@ -40,7 +40,6 @@ public class Sync extends Controller {
             return ok(Json.toJson(result));
         }
 
-
         String uid = session("id");
         //String uid = "1";
         if (uid == null || uid.length() == 0) {
@@ -48,6 +47,10 @@ public class Sync extends Controller {
             return ok(Json.toJson(result));
         }
 
+
+    }
+
+    private Result insertDayRecord(String uid, SyncRecordList syncRecordList) {
         // t_train and t_challenge 用户存储用户每天的数据，不是每次的数据
         String table;
         if (syncRecordList.getTable().equals("train")) {
@@ -56,6 +59,7 @@ public class Sync extends Controller {
             table = "t_challenge";
         }
 
+        SyncRecordList result = new SyncRecordList();
         final String sql = "INSERT INTO " + table + " (owner_id, date, duration) VALUES('%s', '%s', %d) ON DUPLICATE KEY UPDATE duration = %d";
         String tmp;
         List<String> sqls = new ArrayList<>();
@@ -63,6 +67,7 @@ public class Sync extends Controller {
             tmp = String.format(sql, uid, record.getDate(), record.getDuration(), record.getDuration());
             sqls.add(tmp);
         }
+
         int count = DBUtil.bulkInsert(sqls);
         if (count > 0) {
             result.setCode(0);
@@ -72,8 +77,36 @@ public class Sync extends Controller {
         return ok(Json.toJson(result));
     }
 
+    private Result insertDetailRecord(String uid, SyncRecordList syncRecordList) {
+        // t_train_record and t_challenge_record 用户存储用户每天的数据，不是每次的数据
+        String table;
+        if (syncRecordList.getTable().equals("trainDetail")) {
+            table = "t_train_record";
+        } else {
+            table = "t_challenge_record";
+        }
+
+        SyncRecordList result = new SyncRecordList();
+        final String sql = "INSERT INTO " + table + " (owner_id, start, end) VALUES('%s', %d, %d)";
+        String tmp;
+        List<String> sqls = new ArrayList<>();
+        for (SyncRecord record : syncRecordList.getRecords()) {
+            tmp = String.format(sql, uid, record.getDate(), record.getStartMillis(), record.getEndMillis());
+            sqls.add(tmp);
+        }
+
+        int count = DBUtil.bulkInsert(sqls);
+        if (count > 0) {
+            result.setCode(0);
+        } else {
+            result.setCode(-1);
+        }
+        return ok(Json.toJson(result));
+
+    }
+
     //http://localhost:9000/api/sync/download/t_train?limit=1
-    public static Result download(String table, int limit) {
+    public static Result downloadDayRecord(String table, int limit) {
         String owner_id = session("id");
         //String owner_id = "1";
         SyncRecordList syncRecordList = new SyncRecordList();
