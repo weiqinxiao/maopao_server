@@ -1,6 +1,10 @@
-name := "playTest"
+import com.typesafe.config.ConfigFactory
 
-version := "1.0"
+val conf = ConfigFactory.parseFile(new File("conf/application.conf")).resolve()
+
+name := conf.getString("app.name")
+
+version := conf.getString("app.version")
 
 lazy val `playtest` = (project in file(".")).enablePlugins(PlayScala)
 

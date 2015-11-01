@@ -1,11 +1,16 @@
 package controllers;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import net.sf.ehcache.config.ConfigurationFactory;
+import play.*;
 import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Result;
 import util.QiniuUtil;
 import util.TimeUtil;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +23,10 @@ import java.sql.Statement;
 public class App extends Controller{
 
     public static Result index(){
-       return ok("HELLO world:  " + TimeUtil.getCurrentWeekStartMillis() + " " + TimeUtil.getTodayStartMillis());
+        Config config = ConfigFactory.parseFile(new File("conf/application.conf")).resolve();
+        String version = config.getString("app.version");
+        String name = config.getString("app.name");
+       return ok("HELLO world:  " + name + " " + version  + " " + TimeUtil.getCurrentWeekStartMillis() + " " + TimeUtil.getTodayStartMillis());
     }
 
     public static Result test(){
