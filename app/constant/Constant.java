@@ -5,4 +5,7 @@ package constant;
  */
 public class Constant {
     public static final int UN_LOGIN = 1000;
+
+    public static final int ALREADY_FOLLOWED = 2000;
+    public static final int FOLLOW_ID_ERROR = 2001;
 }

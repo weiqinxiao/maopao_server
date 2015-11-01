@@ -27,6 +27,7 @@ POST        /api/tweet_xiaohao                   controllers.Tweet.publishTweetB
 POST        /api/tweet/:id/star/:type            controllers.Tweet.star(id: Long, type: String)
 POST        /api/tweet/:id/comment               controllers.Comment.publishComment(id :Long)
 POST        /api/login                           controllers.User.login()
+POST        /api/user/follow                     controllers.User.follow()
 POST        /api/challenge/submit                controllers.Challenge.submitChallengeRecord()
 POST        /api/train/submit                    controllers.Train.submitTrainRecord()
 POST        /api/post/collect                    controllers.Post.collectPost()

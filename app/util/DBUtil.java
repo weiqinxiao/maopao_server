@@ -26,15 +26,23 @@ public class DBUtil {
 
     public static long queryLastId(Statement statement) throws SQLException {
         ResultSet resultSet = statement.executeQuery(QUERY_LAST_ID);
-        resultSet.next();
-        return resultSet.getLong("LAST_INSERT_ID()");
+        long lastId = -1;
+        if (resultSet.next()) {
+            lastId = resultSet.getLong("LAST_INSERT_ID()");
+        }
+        resultSet.close();
+        return lastId;
     }
 
     public static long queryMaxId(Statement statement, String table) throws SQLException {
         String sql = QUERY_MAX_ID + table;
         ResultSet resultSet = statement.executeQuery(sql);
+        long maxId = -1;
+        if (resultSet.next()) {
+            maxId = resultSet.getLong("MAX(ID)");
+        }
         resultSet.next();
-        return resultSet.getLong("MAX(ID)");
+        return maxId;
 
     }
 
@@ -131,11 +139,37 @@ public class DBUtil {
             e.printStackTrace();
         } finally {
             try {
-                statement.close();
-                connection.close();
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
 
             }
+        }
+
+        return id;
+    }
+
+    /**
+     * do not close statement
+     *
+     * @param statement
+     * @param sql
+     * @return
+     */
+    public static long insert(Statement statement, String sql) {
+        if (statement == null || StringUtil.isEmputy(sql)) {
+            return -1;
+        }
+        long id = -1;
+        try {
+            statement.execute(sql);
+            id = queryLastId(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return id;
@@ -158,7 +192,7 @@ public class DBUtil {
             count = result == null ? 0 : result.length;
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 statement.close();
                 connection.close();
