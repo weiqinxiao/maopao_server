@@ -21,6 +21,13 @@ GET         /api/train_count                     controllers.Train.getTodayFinis
 GET         /api/post/:lastId                    controllers.Post.getCollectedPosts(lastId:Long)
 GET         /api/sync/download/:table            controllers.Sync.downloadDayRecord(table:String, limit:Int ?= 60)
 
+#user
+GET         /api/user/followed_count             controllers.User.getFollowedCount(ownerId:String ?="")
+GET         /api/user/follow_count               controllers.User.getFollowCount(ownerId:String ?="")
+GET         /api/user/follow_list                controllers.User.getFollowList(last_id:Long ?= 9999999, limit:Int ?= 30, onwerId:Long)
+GET         /api/user/followed_list              controllers.User.getFollowedList(last_id:Long ?= 9999999, limit:Int ?= 30, onwerId:Long)
+#end user
+
 POST        /api/tweet                           controllers.Tweet.publishTweet()
 POST        /api/private_tweet                   controllers.PrivateTweet.publishPrivateTweet()
 POST        /api/tweet_xiaohao                   controllers.Tweet.publishTweetByXiaoHao()
@@ -28,7 +35,7 @@ POST        /api/tweet/:id/star/:type            controllers.Tweet.star(id: Long
 POST        /api/tweet/:id/comment               controllers.Comment.publishComment(id :Long)
 POST        /api/login                           controllers.User.login()
 POST        /api/user/follow                     controllers.User.follow()
-POST        /api/user/unfollow                     controllers.User.unFollow()
+POST        /api/user/unfollow                   controllers.User.unFollow()
 POST        /api/challenge/submit                controllers.Challenge.submitChallengeRecord()
 POST        /api/train/submit                    controllers.Train.submitTrainRecord()
 POST        /api/post/collect                    controllers.Post.collectPost()

@@ -1,8 +1,11 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import constant.Constant;
 import model.FollowList;
 import model.UserObject;
+import org.json.JSONObject;
 import play.db.DB;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -82,16 +85,75 @@ public class User extends Controller {
         return ok(Json.toJson(userObject));
     }
 
-    public static Result follow(){
+    public static Result follow() {
         return follow(1);
     }
 
-    public static Result unFollow(){
+    public static Result unFollow() {
         return follow(2);
     }
 
+    public static Result getFollowCount(String ownerId) {
+        ObjectNode objectNode = Json.newObject();
+        String uid;
+        if (StringUtil.isEmputy(ownerId)){
+            uid = session("uid");
+            if (StringUtil.isEmputy(uid)){
+                objectNode.put(Constant.RESPONSE_CODE, Constant.UN_LOGIN);
+                objectNode.put(Constant.RESPONSE_MSG, "paramter is null and not login");
+                return ok(objectNode);
+            }
+        }else {
+            uid = ownerId;
+        }
+
+        long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id = " + uid);
+        objectNode.put("count", count);
+        if (count >= 0){
+            objectNode.put(Constant.RESPONSE_CODE, 0);
+        }else {
+            objectNode.put(Constant.RESPONSE_CODE, -1);
+        }
+
+        return ok(objectNode);
+    }
+
+    public static Result getFollowedCount(String ownerId) {
+
+        ObjectNode objectNode = Json.newObject();
+        String uid;
+        if (StringUtil.isEmputy(ownerId)){
+            uid = session("uid");
+            if (StringUtil.isEmputy(uid)){
+                objectNode.put(Constant.RESPONSE_CODE, Constant.UN_LOGIN);
+                objectNode.put(Constant.RESPONSE_MSG, "paramter is null and not login");
+                return ok(objectNode);
+            }
+        }else {
+            uid = ownerId;
+        }
+
+        long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id= " + uid);
+        objectNode.put("count", count);
+        if (count >= 0){
+            objectNode.put(Constant.RESPONSE_CODE, 0);
+        }else {
+            objectNode.put(Constant.RESPONSE_CODE, -1);
+        }
+
+        return ok(objectNode);
+    }
+
+    public static Result getFollowedList(long lastId, int limit, long ownerId){
+
+        return TODO;
+    }
+
+    public static Result getFollowList(long lastId, int limit, long ownerId){
+        return TODO;
+    }
+
     /**
-     *
      * @param flag 1, follow; 2, unFollow
      * @return
      */
@@ -122,12 +184,12 @@ public class User extends Controller {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            if (flag == 1){
+            if (flag == 1) {
                 followList = follow(statement, uid, followId);
-            }else if (flag == 2){
-                if (unFollow(statement, uid, followId)){
+            } else if (flag == 2) {
+                if (unFollow(statement, uid, followId)) {
                     followList.setCode(0);
-                }else {
+                } else {
                     followList.setCode(Constant.UN_FOLLOW_FAIL);
                 }
             }
@@ -172,7 +234,7 @@ public class User extends Controller {
 
     }
 
-    public static boolean unFollow(Statement statement, String uid, String followId) throws SQLException {
+    private static boolean unFollow(Statement statement, String uid, String followId) throws SQLException {
         String deleteSql = "DELETE FROM t_owner_follow WHERE owner_id = '%s' AND follow_owner_id = '%s'";
         deleteSql = String.format(deleteSql, uid, followId);
         int result = statement.executeUpdate(deleteSql);

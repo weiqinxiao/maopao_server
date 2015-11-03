@@ -153,6 +153,44 @@ public class DBUtil {
         return id;
     }
 
+    public static long queryCount(String table, String where) {
+        long count = -1;
+        if (StringUtil.isEmputy(table)){
+            return -1;
+        }
+        String sql = "SELECT COUNT(1) FROM " + table;
+
+        if (!StringUtil.isEmputy(where)){
+            sql += " WHERE " + where;
+        }
+
+        Connection connection = DB.getConnection();
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                // index start from 1
+                count = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return count;
+    }
+
     /**
      * do not close statement
      *
