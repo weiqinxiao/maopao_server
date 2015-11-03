@@ -114,4 +114,8 @@ public class WxController extends Controller {
         return lsSerializer.writeToString(doc);
     }
 
+    public static Result todayPost(){
+        return ok(views.html.wx_post.render("大腿粗and肌肉腿的最佳塑型拉伸法", "<p>坚持拉伸好习惯，送你长腿线。要缓慢控制下到自己的极限，以下6个动作，控制住四~八个呼吸左右</p> <p><img src=\"http://ww1.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rbx0v5eg20bf09ehdv.gif\" alt=\"\" /></p> <p><img src=\"http://ww4.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rc75c9ng20b4097nph.gif\" alt=\"\" /></p> <p><img src=\"http://ww2.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcfi9xwg20b4097nph.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcoiz9fg20b409jnpg.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcsvv2yg20b409nnpe.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rd2ny2zg20b409l1l3.gif\" alt=\"\" /></p> <p>&nbsp;</p>"));
+    }
+
 }
