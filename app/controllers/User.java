@@ -144,12 +144,12 @@ public class User extends Controller {
         return ok(objectNode);
     }
 
-    public static Result getFollowedList(long lastId, int limit, long ownerId){
+    public static Result getFollowedList(long lastId, int limit, String ownerId){
 
         return TODO;
     }
 
-    public static Result getFollowList(long lastId, int limit, long ownerId){
+    public static Result getFollowList(long lastId, int limit, String ownerId){
         return TODO;
     }
 
