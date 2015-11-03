@@ -22,10 +22,10 @@ GET         /api/post/:lastId                    controllers.Post.getCollectedPo
 GET         /api/sync/download/:table            controllers.Sync.downloadDayRecord(table:String, limit:Int ?= 60)
 
 #user
-GET         /api/user/followed_count             controllers.User.getFollowedCount(ownerId:String ?="")
-GET         /api/user/follow_count               controllers.User.getFollowCount(ownerId:String ?="")
-GET         /api/user/follow_list                controllers.User.getFollowList(last_id:Long ?= 9999999, limit:Int ?= 30, ownerId:String)
-GET         /api/user/followed_list              controllers.User.getFollowedList(last_id:Long ?= 9999999, limit:Int ?= 30, ownerId:String)
+GET         /api/user/followed_count             controllers.User.getFollowedCount(ownerId:Long ?= -1)
+GET         /api/user/follow_count               controllers.User.getFollowCount(ownerId:Long ?= -1)
+GET         /api/user/follow_list                controllers.User.getFollowList(last_id:Long ?= 0, limit:Int ?= 30, ownerId:Long ?= -1)
+GET         /api/user/followed_list              controllers.User.getFollowedList(last_id:Long ?= 0, limit:Int ?= 30, ownerId:Long ?= -1)
 #end user
 
 POST        /api/tweet                           controllers.Tweet.publishTweet()

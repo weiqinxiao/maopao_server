@@ -1,5 +1,7 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import constant.Constant;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -11,6 +13,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import util.DBUtil;
+import util.StringUtil;
 import util.TimeUtil;
 
 import java.sql.*;
@@ -98,5 +101,27 @@ public class ControllerUtil extends Controller {
         }
 
         return ok(Json.toJson(recordList));
+    }
+
+    public static Result newUnLoginResponse() {
+        ObjectNode objectNode = Json.newObject();
+        objectNode.put(Constant.RESPONSE_CODE, Constant.UN_LOGIN);
+        objectNode.put(Constant.RESPONSE_MSG, "paramter is null and not login");
+        return ok(objectNode);
+    }
+
+    /**
+     * @return uid >= 0, login; < 0, not login
+     */
+    public static long getLoginUid() {
+        String tmp = session("uid");
+        long uid = -1;
+        try {
+            uid = Long.parseLong(tmp);
+        } catch (Exception e) {
+            uid = -1;
+        }
+
+        return uid;
     }
 }

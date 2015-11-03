@@ -166,9 +166,10 @@ public class DBUtil {
 
         Connection connection = DB.getConnection();
         Statement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
+            resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
                 // index start from 1
                 count = resultSet.getInt(1);
@@ -177,6 +178,9 @@ public class DBUtil {
             e.printStackTrace();
         } finally {
             try {
+                if (resultSet != null){
+                    resultSet.close();
+                }
                 if (statement != null) {
                     statement.close();
                 }

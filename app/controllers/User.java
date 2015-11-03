@@ -1,11 +1,9 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import constant.Constant;
 import model.FollowList;
 import model.UserObject;
-import org.json.JSONObject;
 import play.db.DB;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -16,7 +14,6 @@ import util.StringUtil;
 import util.TextContentUtil;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
@@ -93,65 +90,131 @@ public class User extends Controller {
         return follow(2);
     }
 
-    public static Result getFollowCount(String ownerId) {
+    public static Result getFollowCount(long ownerId) {
         ObjectNode objectNode = Json.newObject();
-        String uid;
-        if (StringUtil.isEmputy(ownerId)){
-            uid = session("uid");
-            if (StringUtil.isEmputy(uid)){
-                objectNode.put(Constant.RESPONSE_CODE, Constant.UN_LOGIN);
-                objectNode.put(Constant.RESPONSE_MSG, "paramter is null and not login");
-                return ok(objectNode);
+        long uid;
+        if (ownerId < 0) {
+            uid = ControllerUtil.getLoginUid();
+            if (uid < 0){
+                return ControllerUtil.newUnLoginResponse();
             }
-        }else {
+        } else {
             uid = ownerId;
         }
 
         long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id = " + uid);
         objectNode.put("count", count);
-        if (count >= 0){
+        if (count >= 0) {
             objectNode.put(Constant.RESPONSE_CODE, 0);
-        }else {
+        } else {
             objectNode.put(Constant.RESPONSE_CODE, -1);
         }
 
         return ok(objectNode);
     }
 
-    public static Result getFollowedCount(String ownerId) {
+    public static Result getFollowedCount(long ownerId) {
 
         ObjectNode objectNode = Json.newObject();
-        String uid;
-        if (StringUtil.isEmputy(ownerId)){
-            uid = session("uid");
-            if (StringUtil.isEmputy(uid)){
+        long uid;
+        if (ownerId < 0) {
+            uid = ControllerUtil.getLoginUid();
+            if (uid < 0) {
                 objectNode.put(Constant.RESPONSE_CODE, Constant.UN_LOGIN);
                 objectNode.put(Constant.RESPONSE_MSG, "paramter is null and not login");
                 return ok(objectNode);
             }
-        }else {
+        } else {
             uid = ownerId;
         }
 
         long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id= " + uid);
         objectNode.put("count", count);
-        if (count >= 0){
+        if (count >= 0) {
             objectNode.put(Constant.RESPONSE_CODE, 0);
-        }else {
+        } else {
             objectNode.put(Constant.RESPONSE_CODE, -1);
         }
 
         return ok(objectNode);
     }
 
-    public static Result getFollowedList(long lastId, int limit, String ownerId){
+    /**
+     * @param flag    1, follow; 2, followed
+     * @param limit
+     * @param ownerId
+     * @return
+     */
+    private static Result getFollowOrFollowedList(int flag, long lastId, int limit, long ownerId) {
+        long uid = -1;
+        if (ownerId < 0) {
+            uid = ControllerUtil.getLoginUid();
+            if (uid < 0) {
+                return ControllerUtil.newUnLoginResponse();
+            }
+            ownerId = uid;
+        }
 
-        return TODO;
+        limit = limit > 30 ? 30 : limit;
+
+        String sql;
+        if (flag == 1) { // follow
+            sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_user.created_at " +
+                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.follow_owner_id WHERE owner_id = %d AND t_owner_follow.id > %d ORDER BY t_owner_follow.id DESC LIMIT %d";
+            sql = String.format(sql, ownerId, lastId, limit);
+        } else { // followed
+            sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_user.created_at " +
+                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.owner_id WHERE follow_owner_id = %d AND t_owner_follow.id > %d ORDER BY t_owner_follow.id DESC LIMIT %d";
+            sql = String.format(sql, ownerId, lastId, limit);
+        }
+
+        Connection connection = DB.getConnection();
+        Statement statement = null;
+        ResultSet resultSet = null;
+        FollowList followList = new FollowList();
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+            UserObject userObject;
+            followList.setCode(0);
+            while (resultSet.next()) {
+                userObject = new UserObject(resultSet);
+                userObject.id = resultSet.getString("id");
+                userObject.name = resultSet.getString("name");
+                userObject.avatar = resultSet.getString("head_url");
+                userObject.created_at = resultSet.getLong("created_at");
+                followList.addFollow(userObject);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            followList.setCode(-1);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ok(Json.toJson(followList));
     }
 
-    public static Result getFollowList(long lastId, int limit, String ownerId){
-        return TODO;
+    public static Result getFollowedList(long lastId, int limit, long ownerId) {
+        return getFollowOrFollowedList(2, lastId, limit, ownerId);
     }
+
+    public static Result getFollowList(long lastId, int limit, long ownerId) {
+        return getFollowOrFollowedList(1, lastId, limit, ownerId);
+    }
+
 
     /**
      * @param flag 1, follow; 2, unFollow
