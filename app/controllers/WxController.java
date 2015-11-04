@@ -1,7 +1,5 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import me.chanjar.weixin.common.util.StringUtils;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
@@ -9,21 +7,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
-import play.db.DB;
-import play.libs.F;
-import play.libs.ws.WS;
-import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import util.DBUtil;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by jiangecho on 15/10/22.
@@ -127,45 +115,7 @@ public class WxController extends Controller {
     }
 
     public static Result todayPost() {
-        syncPosts();
         return ok(views.html.wx_post.render("大腿粗and肌肉腿的最佳塑型拉伸法", "<p>坚持拉伸好习惯，送你长腿线。要缓慢控制下到自己的极限，以下6个动作，控制住四~八个呼吸左右</p> <p><img src=\"http://ww1.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rbx0v5eg20bf09ehdv.gif\" alt=\"\" /></p> <p><img src=\"http://ww4.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rc75c9ng20b4097nph.gif\" alt=\"\" /></p> <p><img src=\"http://ww2.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcfi9xwg20b4097nph.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcoiz9fg20b409jnpg.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcsvv2yg20b409nnpe.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rd2ny2zg20b409l1l3.gif\" alt=\"\" /></p> <p>&nbsp;</p>"));
-    }
-
-    public static void syncPosts() {
-
-        long t = 10 * 1000;
-        String url = "http://diaoba.wang/?json=get_recent_posts";
-        F.Promise<JsonNode> jsonPromise = WS.url(url).get().map(
-                new F.Function<WSResponse, JsonNode>() {
-                    public JsonNode apply(WSResponse response) {
-                        JsonNode json = response.asJson();
-
-                        return json;
-                    }
-                }
-        );
-    }
-
-    private static void insertWXPostInsertDb(JsonNode jsonNode) {
-        if (jsonNode == null) {
-            return;
-        }
-        List<JsonNode> jsonNodes = jsonNode.findValues("posts");
-        if (jsonNodes == null) {
-            return;
-        }
-
-        ArrayNode arrayNode = (ArrayNode) jsonNodes.get(0);
-        if (arrayNode == null || arrayNode.size() == 0) {
-            return;
-        }
-
-        // TODO add wordpress post model and then use objectWrapper
-        // fuck add post id to table
-        String sql = "INSERT INTO t_wx_post(title, content, url) VALUES('%s', '%s', '%s')";
-        List<String> sqls = new ArrayList<>();
-
-
     }
 
 }

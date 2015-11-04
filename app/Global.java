@@ -3,17 +3,21 @@
  */
 
 import com.fasterxml.jackson.databind.JsonNode;
-import scala.concurrent.duration.Duration;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
 import play.libs.Akka;
-import play.libs.ws.*;
-import play.libs.F.Function;
-import play.libs.F.Promise;
+import play.libs.F;
+import play.libs.ws.WS;
+import play.libs.ws.WSResponse;
+import scala.concurrent.duration.Duration;
+import util.DBUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Global extends GlobalSettings {
@@ -33,7 +37,8 @@ public class Global extends GlobalSettings {
                 Duration.create(nextExecutionInSeconds(10, 0), TimeUnit.SECONDS),
                 Duration.create(24, TimeUnit.HOURS),
                 () -> {
-                    Logger.info("EVERY DAY AT 8:00 ---    " + System.currentTimeMillis());
+                    Logger.info("EVERY DAY AT 10:00 ---    " + System.currentTimeMillis());
+                    syncPosts();
                 },
                 Akka.system().dispatcher()
         );
@@ -58,21 +63,56 @@ public class Global extends GlobalSettings {
                 : next;
     }
 
-    public static void syncPosts(){
+    public static void syncPosts() {
 
-        long t = 1000;
+        long t = 10 * 1000;
         String url = "http://diaoba.wang/?json=get_recent_posts";
-        Promise<JsonNode> jsonPromise = WS.url(url).get().map(
-                new Function<WSResponse, JsonNode>() {
+        F.Promise<JsonNode> jsonPromise = WS.url(url).get().map(
+                new F.Function<WSResponse, JsonNode>() {
                     public JsonNode apply(WSResponse response) {
                         JsonNode json = response.asJson();
+                        insertWXPostInsertDb(json);
+
                         return json;
                     }
                 }
         );
+    }
 
-        JsonNode jsonNode = jsonPromise.get(t);
-        jsonNode.get(0);
+    private static void insertWXPostInsertDb(JsonNode jsonNode) {
+        if (jsonNode == null) {
+            return;
+        }
+        List<JsonNode> jsonNodes = jsonNode.findValues("posts");
+        if (jsonNodes == null) {
+            return;
+        }
 
+        ArrayNode arrayNode = (ArrayNode) jsonNodes.get(0);
+        if (arrayNode == null || arrayNode.size() == 0) {
+            return;
+        }
+
+        String title;
+        String content;
+        String url;
+        int post_id;
+
+        final String sql = "INSERT INTO t_wx_post(post_id, title, content, url) VALUES(%d, '%s', '%s', '%s') ON DUPLICATE KEY UPDATE id= id";
+        String tmpSql;
+        List<String> sqls = new ArrayList<>();
+
+        for (JsonNode node : arrayNode) {
+            post_id = node.path("id").asInt();
+            content = node.path("content").asText();
+            title = node.path("title").asText();
+            url = node.path("url").asText();
+            tmpSql = String.format(sql, post_id, title, content, url);
+            sqls.add(tmpSql);
+        }
+
+        if (sqls.size() > 0) {
+            DBUtil.bulkInsert(sqls);
+        }
     }
 }
