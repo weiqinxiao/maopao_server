@@ -13,7 +13,7 @@
     <body>
         <ul>
         @for(post <- posts) {
-            <li><a href="api/wx/post/@post.getId()">@post.getTitle()</a></li>
+            <li><a href="post/@post.getId()">@post.getTitle()</a></li>
         }
         </ul>
     </body>

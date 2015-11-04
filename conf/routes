@@ -50,7 +50,7 @@ GET         /css/*file                           controllers.Assets.at(path = "/
 GET         /js/*file                            controllers.Assets.at(path = "/public/js", file)
 
 #for wx
-GET         /wx                                  controllers.WxController.checkSignature()
-POST        /wx                                  controllers.WxController.handleMessage()
-GET         /wx/daily_post_list                  controllers.WxController.todayPostList()
+GET         /api/wx                              controllers.WxController.checkSignature()
+POST        /api/wx                              controllers.WxController.handleMessage()
+GET         /api/wx/daily_post_list              controllers.WxController.todayPostList()
 GET         /api/wx/post/:id                     controllers.WxController.post(id:Long)
