@@ -3,15 +3,24 @@ package controllers;
 import me.chanjar.weixin.common.util.StringUtils;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
+import model.PostInfo;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import util.Util;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by jiangecho on 15/10/22.
@@ -114,8 +123,50 @@ public class WxController extends Controller {
         return lsSerializer.writeToString(doc);
     }
 
-    public static Result todayPost() {
-        return ok(views.html.wx_post.render("大腿粗and肌肉腿的最佳塑型拉伸法", "<p>坚持拉伸好习惯，送你长腿线。要缓慢控制下到自己的极限，以下6个动作，控制住四~八个呼吸左右</p> <p><img src=\"http://ww1.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rbx0v5eg20bf09ehdv.gif\" alt=\"\" /></p> <p><img src=\"http://ww4.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rc75c9ng20b4097nph.gif\" alt=\"\" /></p> <p><img src=\"http://ww2.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcfi9xwg20b4097nph.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcoiz9fg20b409jnpg.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rcsvv2yg20b409nnpe.gif\" alt=\"\" /></p> <p><img src=\"http://ww3.sinaimg.cn/bmiddle/b1a0abe9jw1ex3rd2ny2zg20b409l1l3.gif\" alt=\"\" /></p> <p>&nbsp;</p>"));
+    public static Result todayPostList() {
+        List<PostInfo> postInfoList = new ArrayList<>();
+        PostInfo postInfo = null;
+
+        Connection connection = null;
+        Statement statement = null;
+        connection = DB.getConnection();
+        ResultSet resultSet = null;
+        String sql = "SELECT id, title FROM t_wx_post ORDER BY id DESC LIMIT 10";
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+
+            long id;
+            String title;
+            while (resultSet.next()) {
+                id = resultSet.getInt("id");
+                title = resultSet.getString("title");
+                postInfo = new PostInfo();
+                postInfo.setId(id);
+                postInfo.setTitle(title);
+                postInfoList.add(postInfo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null){
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        scala.collection.immutable.List<PostInfo> scalaList = Util.scalaList(postInfoList);
+        return ok(views.html.wx_daily_post_list.render("今日健身", scalaList));
     }
 
 }
