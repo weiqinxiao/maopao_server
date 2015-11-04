@@ -53,3 +53,4 @@ GET         /js/*file                            controllers.Assets.at(path = "/
 GET         /wx                                  controllers.WxController.checkSignature()
 POST        /wx                                  controllers.WxController.handleMessage()
 GET         /wx/daily_post_list                  controllers.WxController.todayPostList()
+GET         /api/wx/post/:id                     controllers.WxController.post(id:Long)

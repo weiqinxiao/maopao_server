@@ -12,6 +12,7 @@ import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import util.DBUtil;
 import util.Util;
 
 import java.sql.Connection;
@@ -167,6 +168,44 @@ public class WxController extends Controller {
 
         scala.collection.immutable.List<PostInfo> scalaList = Util.scalaList(postInfoList);
         return ok(views.html.wx_daily_post_list.render("今日健身", scalaList));
+    }
+
+    public static Result post(long id){
+        Connection connection = null;
+        Statement statement = null;
+        connection = DB.getConnection();
+        ResultSet resultSet = null;
+        String sql = "SELECT title, content FROM t_wx_post WHERE id = " + id;
+
+        String title = "not found";
+        String content = "error";
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()) {
+                title = resultSet.getString("title");
+                content = resultSet.getString("content");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null){
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ok(views.html.wx_post.render(title, content));
     }
 
 }
