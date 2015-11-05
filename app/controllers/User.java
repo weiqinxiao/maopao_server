@@ -90,12 +90,13 @@ public class User extends Controller {
         return follow(2);
     }
 
+    //fans count
     public static Result getFollowCount(long ownerId) {
         ObjectNode objectNode = Json.newObject();
         long uid;
         if (ownerId < 0) {
             uid = ControllerUtil.getLoginUid();
-            if (uid < 0){
+            if (uid < 0) {
                 return ControllerUtil.newUnLoginResponse();
             }
         } else {
@@ -121,7 +122,7 @@ public class User extends Controller {
             uid = ControllerUtil.getLoginUid();
             if (uid < 0) {
                 objectNode.put(Constant.RESPONSE_CODE, Constant.UN_LOGIN);
-                objectNode.put(Constant.RESPONSE_MSG, "paramter is null and not login");
+                objectNode.put(Constant.RESPONSE_MSG, "parameter is null and not login");
                 return ok(objectNode);
             }
         } else {
@@ -213,6 +214,61 @@ public class User extends Controller {
 
     public static Result getFollowList(long lastId, int limit, long ownerId) {
         return getFollowOrFollowedList(1, lastId, limit, ownerId);
+    }
+
+    public static Result currentUser() {
+        //long uid = ControllerUtil.getLoginUid();
+        long uid = 2;
+        if (uid < 0) {
+            return ControllerUtil.newUnLoginResponse();
+        }
+
+//        String id = resultSet.getString("id");
+//        String name = resultSet.getString("name");
+//        String headImgUrl = resultSet.getString("head_url");
+        final String querySql = "SELECT id, name, head_url FROM t_user WHERE id = " + uid;
+        Connection connection;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        connection = DB.getConnection();
+        UserObject userObject = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(querySql);
+            if (resultSet.next()){
+                userObject = new UserObject(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ObjectNode objectNode = Json.newObject();
+        if (userObject != null) {
+            int fans_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id = " + uid);
+            int follows_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id= " + uid);
+            userObject.fans_count = fans_count;
+            userObject.follows_count = follows_count;
+
+            objectNode.put("code", 0);
+            objectNode.put("data", Json.toJson(userObject));
+        } else {
+            objectNode.put("code", -1);
+        }
+        return ok(objectNode);
     }
 
 

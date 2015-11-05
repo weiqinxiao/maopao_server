@@ -26,6 +26,7 @@ GET         /api/user/followed_count             controllers.User.getFollowedCou
 GET         /api/user/follow_count               controllers.User.getFollowCount(ownerId:Long ?= -1)
 GET         /api/user/follow_list                controllers.User.getFollowList(last_id:Long ?= 0, limit:Int ?= 30, ownerId:Long ?= -1)
 GET         /api/user/followed_list              controllers.User.getFollowedList(last_id:Long ?= 0, limit:Int ?= 30, ownerId:Long ?= -1)
+GET         /api/current_user                    controllers.User.currentUser()
 #end user
 
 POST        /api/tweet                           controllers.Tweet.publishTweet()
