@@ -19,6 +19,8 @@ import util.DBUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Global extends GlobalSettings {
 
@@ -39,6 +41,7 @@ public class Global extends GlobalSettings {
                 () -> {
                     Logger.info("EVERY DAY AT 10:00 ---    " + System.currentTimeMillis());
                     syncPosts();
+                    Logger.info("sync post end");
                 },
                 Akka.system().dispatcher()
         );
@@ -98,16 +101,29 @@ public class Global extends GlobalSettings {
         String url;
         int post_id;
 
-        final String sql = "INSERT INTO t_wx_post(post_id, title, content, url) VALUES(%d, '%s', '%s', '%s') ON DUPLICATE KEY UPDATE id= id";
+        final String sql = "INSERT INTO t_wx_post(post_id, title, content, url, image_url) VALUES(%d, '%s', '%s', '%s', '%s') ON DUPLICATE KEY UPDATE id= id";
         String tmpSql;
         List<String> sqls = new ArrayList<>();
 
+        String imageUrl = "";
+        final String regex = "<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher;
+
         for (JsonNode node : arrayNode) {
+            imageUrl = "";
             post_id = node.path("id").asInt();
             content = node.path("content").asText();
             title = node.path("title").asText();
             url = node.path("url").asText();
-            tmpSql = String.format(sql, post_id, title, content, url);
+
+            matcher = pattern.matcher(content);
+//            boolean found = matcher.find();
+            int count = matcher.groupCount();
+            if (matcher.find()){
+                imageUrl = matcher.group(1);
+            }
+            tmpSql = String.format(sql, post_id, title, content, url, imageUrl);
             sqls.add(tmpSql);
         }
 

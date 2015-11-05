@@ -54,7 +54,7 @@
                 @for( post <- posts) {
                     <a href="post/@post.getId()">
                         <li class="article_li">
-                            <img src="http://7xj08q.com1.z0.glb.clouddn.com/0_1.jpg" />
+                            <img src="@post.getImageUrl" />
                             <div class="article_title">
                                 <p>@post.getTitle()</p>
                             </div>

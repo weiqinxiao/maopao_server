@@ -10,6 +10,7 @@ public class PostInfo implements Serializable{
     public String title;
     public String date;
     public String url;
+    public String imageUrl; // an image about the post
 
     public long getId() {
         return id;
@@ -41,5 +42,13 @@ public class PostInfo implements Serializable{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

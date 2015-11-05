@@ -12,7 +12,6 @@ import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import util.DBUtil;
 import util.Util;
 
 import java.sql.Connection;
@@ -132,19 +131,23 @@ public class WxController extends Controller {
         Statement statement = null;
         connection = DB.getConnection();
         ResultSet resultSet = null;
-        String sql = "SELECT id, title FROM t_wx_post ORDER BY id DESC LIMIT 10";
+        String sql = "SELECT id, title, image_url FROM t_wx_post ORDER BY id DESC LIMIT 10";
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
 
             long id;
             String title;
+            String imageUrl;
             while (resultSet.next()) {
                 id = resultSet.getInt("id");
                 title = resultSet.getString("title");
+                imageUrl = resultSet.getString("image_url");
+
                 postInfo = new PostInfo();
                 postInfo.setId(id);
                 postInfo.setTitle(title);
+                postInfo.setImageUrl(imageUrl);
                 postInfoList.add(postInfo);
             }
         } catch (SQLException e) {
