@@ -2,8 +2,6 @@ package controllers;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import net.sf.ehcache.config.ConfigurationFactory;
-import play.*;
 import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Result;

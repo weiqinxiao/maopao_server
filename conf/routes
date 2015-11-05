@@ -55,3 +55,7 @@ GET         /api/wx                              controllers.WxController.checkS
 POST        /api/wx                              controllers.WxController.handleMessage()
 GET         /api/wx/daily_post_list              controllers.WxController.todayPostList()
 GET         /api/wx/post/:id                     controllers.WxController.post(id:Long)
+
+#start wallpaper
+GET         /api/wallpaper/wallpapers            controllers.WallpaperController.getWallpagers(t:Int ?= 4)
+#end wallpaper
