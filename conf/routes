@@ -24,10 +24,10 @@ GET         /api/sync/download/:table            controllers.Sync.downloadDayRec
 #user
 GET         /api/user/followed_count             controllers.User.getFollowedCount(ownerId:Long ?= -1)
 GET         /api/user/follow_count               controllers.User.getFollowCount(ownerId:Long ?= -1)
-GET         /api/user/follow_list                controllers.User.getFollowList(last_id:Long ?= 0, limit:Int ?= 30, ownerId:Long ?= -1)
-GET         /api/user/followed_list              controllers.User.getFollowedList(last_id:Long ?= 0, limit:Int ?= 30, ownerId:Long ?= -1)
 GET         /api/current_user                    controllers.User.currentUser()
 GET         /api/user/key/:uid                   controllers.User.user(uid:String)
+GET         /api/user/followers                  controllers.User.getFollowList(ownerId: Long ?= -1, page:Int ?= 1, pageSize:Int ?= 500)
+GET         /api/user/friends                    controllers.User.getFollowedList(ownerId: Long ?= -1, page:Int ?= 1, pageSize:Int ?= 500)
 #end user
 
 POST        /api/tweet                           controllers.Tweet.publishTweet()

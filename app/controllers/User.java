@@ -142,11 +142,12 @@ public class User extends Controller {
 
     /**
      * @param flag    1, follow; 2, followed
-     * @param limit
+     * @param page pageIndex start from 1
+     * @param pageSize
      * @param ownerId
      * @return
      */
-    private static Result getFollowOrFollowedList(int flag, long lastId, int limit, long ownerId) {
+    private static Result getFollowOrFollowedList(int flag, long ownerId, int page, int pageSize) {
         long uid = -1;
         if (ownerId < 0) {
             uid = ControllerUtil.getLoginUid();
@@ -156,17 +157,16 @@ public class User extends Controller {
             ownerId = uid;
         }
 
-        limit = limit > 30 ? 30 : limit;
-
+        int offset = (page - 1) * pageSize;
         String sql;
         if (flag == 1) { // follow
             sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_user.created_at " +
-                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.follow_owner_id WHERE owner_id = %d AND t_owner_follow.id > %d ORDER BY t_owner_follow.id DESC LIMIT %d";
-            sql = String.format(sql, ownerId, lastId, limit);
+                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.follow_owner_id WHERE owner_id = %d  ORDER BY t_owner_follow.id DESC LIMIT %d, %d";
+            sql = String.format(sql, ownerId, offset, pageSize);
         } else { // followed
             sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_user.created_at " +
-                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.owner_id WHERE follow_owner_id = %d AND t_owner_follow.id > %d ORDER BY t_owner_follow.id DESC LIMIT %d";
-            sql = String.format(sql, ownerId, lastId, limit);
+                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.owner_id WHERE follow_owner_id = %d  ORDER BY t_owner_follow.id DESC LIMIT %d, %d";
+            sql = String.format(sql, ownerId, offset, pageSize);
         }
 
         Connection connection = DB.getConnection();
@@ -208,13 +208,14 @@ public class User extends Controller {
         return ok(Json.toJson(followList));
     }
 
-    public static Result getFollowedList(long lastId, int limit, long ownerId) {
-        return getFollowOrFollowedList(2, lastId, limit, ownerId);
+    public static Result getFollowedList(long ownerId, int page, int pageSize) {
+        return getFollowOrFollowedList(2, ownerId, page, pageSize);
     }
 
-    public static Result getFollowList(long lastId, int limit, long ownerId) {
-        return getFollowOrFollowedList(1, lastId, limit, ownerId);
+    public static Result getFollowList(long ownerId, int page, int pageSize){
+        return getFollowOrFollowedList(1, ownerId, page, pageSize);
     }
+
 
     public static Result user(String uid) {
         final String querySql = "SELECT id, name, head_url FROM t_user WHERE id = " + uid;
