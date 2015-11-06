@@ -103,7 +103,7 @@ public class User extends Controller {
             uid = ownerId;
         }
 
-        long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id = " + uid);
+        long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id = " + uid);
         objectNode.put("count", count);
         if (count >= 0) {
             objectNode.put(Constant.RESPONSE_CODE, 0);
@@ -129,7 +129,7 @@ public class User extends Controller {
             uid = ownerId;
         }
 
-        long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id= " + uid);
+        long count = DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id= " + uid);
         objectNode.put("count", count);
         if (count >= 0) {
             objectNode.put(Constant.RESPONSE_CODE, 0);
