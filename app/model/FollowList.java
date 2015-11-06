@@ -7,7 +7,7 @@ import java.util.List;
  * Created by jiangecho on 15/11/1.
  */
 public class FollowList extends Base{
-    public List<UserObject> follows;
+    public List<UserObject> list;
 
     public FollowList() {
         this.code = -1;
@@ -17,14 +17,14 @@ public class FollowList extends Base{
         this.code = code;
     }
 
-    public void setFollows(List<UserObject> follows) {
-        this.follows = follows;
+    public void setList(List<UserObject> list) {
+        this.list = list;
     }
 
     public void addFollow(UserObject userObject) {
-        if (follows == null) {
-            follows = new ArrayList<>();
+        if (list == null) {
+            list = new ArrayList<>();
         }
-        follows.add(userObject);
+        list.add(userObject);
     }
 }

@@ -173,6 +173,7 @@ public class User extends Controller {
         Statement statement = null;
         ResultSet resultSet = null;
         FollowList followList = new FollowList();
+        ObjectNode objectNode = Json.newObject();
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
@@ -186,7 +187,10 @@ public class User extends Controller {
                 userObject.created_at = resultSet.getLong("created_at");
                 followList.addFollow(userObject);
             }
+            objectNode.put("code", 0);
+            objectNode.put("data", Json.toJson(followList));
         } catch (SQLException e) {
+            objectNode.put("code", -1);
             e.printStackTrace();
             followList.setCode(-1);
         } finally {
@@ -205,7 +209,7 @@ public class User extends Controller {
             }
         }
 
-        return ok(Json.toJson(followList));
+        return ok(Json.toJson(objectNode));
     }
 
     public static Result getFollowedList(long ownerId, int page, int pageSize) {
