@@ -216,16 +216,7 @@ public class User extends Controller {
         return getFollowOrFollowedList(1, lastId, limit, ownerId);
     }
 
-    public static Result currentUser() {
-        //long uid = ControllerUtil.getLoginUid();
-        long uid = 2;
-        if (uid < 0) {
-            return ControllerUtil.newUnLoginResponse();
-        }
-
-//        String id = resultSet.getString("id");
-//        String name = resultSet.getString("name");
-//        String headImgUrl = resultSet.getString("head_url");
+    public static Result user(String uid) {
         final String querySql = "SELECT id, name, head_url FROM t_user WHERE id = " + uid;
         Connection connection;
         Statement statement = null;
@@ -235,7 +226,7 @@ public class User extends Controller {
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(querySql);
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 userObject = new UserObject(resultSet);
             }
         } catch (SQLException e) {
@@ -269,6 +260,20 @@ public class User extends Controller {
             objectNode.put("code", -1);
         }
         return ok(objectNode);
+
+    }
+
+    public static Result currentUser() {
+        //long uid = ControllerUtil.getLoginUid();
+        long uid = 2;
+        if (uid < 0) {
+            return ControllerUtil.newUnLoginResponse();
+        }
+
+//        String id = resultSet.getString("id");
+//        String name = resultSet.getString("name");
+//        String headImgUrl = resultSet.getString("head_url");
+        return user(uid + "");
     }
 
 
