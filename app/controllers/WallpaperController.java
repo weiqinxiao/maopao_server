@@ -8,6 +8,8 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Controller;
+import util.DBUtil;
+import util.StringUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -78,5 +80,24 @@ public class WallpaperController extends Controller {
         }
 
         return ok(objectNode);
+    }
+
+    public static Result submit(String imageUrl, String name, String author, String desc) {
+        ObjectNode objectNode = Json.newObject();
+        if (StringUtil.isEmputy(imageUrl)) {
+            objectNode.put("code", -1);
+            return ok(objectNode);
+        }
+        String sql = "INSERT INTO t_wallpaper(url, name, author, description) VALUES('%s', '%s', '%s', '%s')";
+        long id = DBUtil.insert(String.format(sql, imageUrl, name, author, desc));
+
+        if (id > 0) {
+            objectNode.put("code", 0);
+            objectNode.put("id", id);
+            return ok(objectNode);
+        } else {
+            objectNode.put("code", -1);
+            return ok(objectNode);
+        }
     }
 }

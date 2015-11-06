@@ -59,4 +59,5 @@ GET         /api/wx/post/:id                     controllers.WxController.post(i
 
 #start wallpaper
 GET         /api/wallpaper/wallpapers            controllers.WallpaperController.getWallpagers(t:Int ?= 4)
+GET         /api/wallpaper/submit                controllers.WallpaperController.submit(imageUrl:String, name:String ?= "", author:String ?= "", desc:String ?= "")
 #end wallpaper
