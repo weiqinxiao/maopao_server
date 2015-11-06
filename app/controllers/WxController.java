@@ -145,7 +145,7 @@ public class WxController extends Controller {
 
 
         scala.collection.immutable.List<PostInfo> scalaList = Util.scalaList(postInfoList);
-        return ok(views.html.wx_daily_post_list.render("今日健身", scalaList));
+        return ok(views.html.wx_daily_post_list.render("今日健身头条", scalaList));
     }
 
     public static Result post(long id) {
