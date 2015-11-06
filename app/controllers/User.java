@@ -159,13 +159,13 @@ public class User extends Controller {
 
         int offset = (page - 1) * pageSize;
         String sql;
-        if (flag == 1) { // follow
+        if (flag == 1) { // follow, fans
             sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_user.created_at " +
-                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.follow_owner_id WHERE owner_id = %d  ORDER BY t_owner_follow.id DESC LIMIT %d, %d";
+                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.owner_id WHERE follow_owner_id = %d  ORDER BY t_owner_follow.id DESC LIMIT %d, %d";
             sql = String.format(sql, ownerId, offset, pageSize);
         } else { // followed
             sql = "SELECT t_user.id, t_user.name, t_user.head_url, t_user.created_at " +
-                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.owner_id WHERE follow_owner_id = %d  ORDER BY t_owner_follow.id DESC LIMIT %d, %d";
+                    "FROM t_user INNER JOIN t_owner_follow ON t_user.id = t_owner_follow.follow_owner_id WHERE owner_id = %d  ORDER BY t_owner_follow.id DESC LIMIT %d, %d";
             sql = String.format(sql, ownerId, offset, pageSize);
         }
 
@@ -254,8 +254,8 @@ public class User extends Controller {
 
         ObjectNode objectNode = Json.newObject();
         if (userObject != null) {
-            int fans_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id = " + uid);
-            int follows_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id= " + uid);
+            int fans_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id = " + uid);
+            int follows_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id= " + uid);
             userObject.fans_count = fans_count;
             userObject.follows_count = follows_count;
 
@@ -299,7 +299,7 @@ public class User extends Controller {
         Map<String, String[]> params = request.body().asFormUrlEncoded();
         String followId = null;
         if (params != null) {
-            String[] values = params.get("followId");
+            String[] values = params.get("users");
             if (values != null) {
                 followId = values[0];
             }
