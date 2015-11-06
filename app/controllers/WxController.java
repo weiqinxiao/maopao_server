@@ -1,6 +1,9 @@
 package controllers;
 
 import me.chanjar.weixin.common.util.StringUtils;
+import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.WxMpServiceImpl;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import model.PostInfo;
@@ -28,6 +31,21 @@ import java.util.List;
 public class WxController extends Controller {
     private static final String TOKEN = "jiangecho";
 
+    private static WxMpInMemoryConfigStorage config = new WxMpInMemoryConfigStorage();
+
+    private static WxMpService wxService = new WxMpServiceImpl();
+
+    static {
+        config = new WxMpInMemoryConfigStorage();
+        config.setAppId("wxc8277bb78f06b12f"); // 设置微信公众号的appid
+        config.setSecret("137893174e62968fa35beb78785edf7c"); // 设置微信公众号的app corpSecret
+        config.setToken("jiangecho"); // 设置微信公众号的token
+        config.setAesKey("peWam6Ii4ZeNXjZccKJmnyN7qhrNVFmZGwZMX55UBaw"); // 设置微信公众号的EncodingAESKey
+
+        wxService = new WxMpServiceImpl();
+        wxService.setWxMpConfigStorage(config);
+    }
+
     public static Result checkSignature() {
         Http.Request request = request();
         String signature = request.getQueryString("signature");
@@ -35,56 +53,13 @@ public class WxController extends Controller {
         String nonce = request.getQueryString("nonce");
         String echostr = request.getQueryString("echostr");
 
-        String[] array = new String[3];
-        array[0] = TOKEN;
-        array[1] = timestamp;
-        array[2] = nonce;
-        Arrays.sort(array);
-
-        String tmp = "";
-        for (String str : array) {
-            tmp += str;
-        }
-        byte[] bytes = DigestUtils.sha1(tmp);
-        String sha1 = byteToStr(bytes);
-        if (sha1.equalsIgnoreCase(signature)) {
+        if (wxService.checkSignature(timestamp, nonce, signature)) {
             return ok(echostr);
         } else {
             return ok("check signature fail");
         }
     }
 
-    /**
-     * 将字节数组转换为十六进制字符串
-     *
-     * @param digest
-     * @return
-     */
-    private static String byteToStr(byte[] digest) {
-        // TODO Auto-generated method stub
-        String strDigest = "";
-        for (int i = 0; i < digest.length; i++) {
-            strDigest += byteToHexStr(digest[i]);
-        }
-        return strDigest;
-    }
-
-    /**
-     * 将字节转换为十六进制字符串
-     *
-     * @param b
-     * @return
-     */
-    private static String byteToHexStr(byte b) {
-        // TODO Auto-generated method stub
-        char[] Digit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        char[] tempArr = new char[2];
-        tempArr[0] = Digit[(b >>> 4) & 0X0F];
-        tempArr[1] = Digit[b & 0X0F];
-
-        String s = new String(tempArr);
-        return s;
-    }
 
     public static Result handleMessage() {
         Http.Request request = request();
@@ -157,10 +132,10 @@ public class WxController extends Controller {
                 if (resultSet != null) {
                     resultSet.close();
                 }
-                if (statement != null){
+                if (statement != null) {
                     statement.close();
                 }
-                if (connection != null){
+                if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException e) {
@@ -173,7 +148,7 @@ public class WxController extends Controller {
         return ok(views.html.wx_daily_post_list.render("今日健身", scalaList));
     }
 
-    public static Result post(long id){
+    public static Result post(long id) {
         Connection connection = null;
         Statement statement = null;
         connection = DB.getConnection();
@@ -197,10 +172,10 @@ public class WxController extends Controller {
                 if (resultSet != null) {
                     resultSet.close();
                 }
-                if (statement != null){
+                if (statement != null) {
                     statement.close();
                 }
-                if (connection != null){
+                if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException e) {
