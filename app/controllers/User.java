@@ -228,6 +228,9 @@ public class User extends Controller {
         ResultSet resultSet = null;
         connection = DB.getConnection();
         UserObject userObject = null;
+
+        String myUid = session("id");
+
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(querySql);
@@ -256,6 +259,15 @@ public class User extends Controller {
         if (userObject != null) {
             int fans_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "follow_owner_id = " + uid);
             int follows_count = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id= " + uid);
+            int tmp = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id  = " + myUid + " and follow_owner_id = " + uid);
+            if (tmp > 0){
+                userObject.followed = true;
+            }
+            tmp = (int) DBUtil.queryCount(Constant.TABLE_FOLLOW, "owner_id  = " + uid + " and follow_owner_id = " + myUid);
+            if (tmp > 0){
+                userObject.follow = true; // follow me
+            }
+
             userObject.fans_count = fans_count;
             userObject.follows_count = follows_count;
 
