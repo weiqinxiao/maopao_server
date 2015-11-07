@@ -98,7 +98,10 @@ public class WxController extends Controller {
         return lsSerializer.writeToString(doc);
     }
 
-    public static Result todayPostList() {
+    // category
+    // how to check category_id: just put you mouse on the category name, and then check the link address(tag_ID)
+    //http://diaoba.wang/?json=get_category_posts&category_id=3
+    public static Result todayPostList(int category_id) {
         List<PostInfo> postInfoList = new ArrayList<>();
         PostInfo postInfo = null;
 
@@ -106,7 +109,7 @@ public class WxController extends Controller {
         Statement statement = null;
         connection = DB.getConnection();
         ResultSet resultSet = null;
-        String sql = "SELECT id, title, image_url FROM t_wx_post ORDER BY id DESC LIMIT 10";
+        String sql = "SELECT id, title, image_url FROM t_wx_post WHERE category_id =" + category_id + " ORDER BY id DESC LIMIT 10";
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
