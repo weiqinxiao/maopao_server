@@ -69,7 +69,7 @@ public class Global extends GlobalSettings {
     public static void syncPosts() {
 
         long t = 10 * 1000;
-        String url = "http://diaoba.wang/?json=get_recent_posts";
+        String url = "http://diaoba.wang/?json=get_recent_posts&count=20";
         F.Promise<JsonNode> jsonPromise = WS.url(url).get().map(
                 new F.Function<WSResponse, JsonNode>() {
                     public JsonNode apply(WSResponse response) {
@@ -100,8 +100,10 @@ public class Global extends GlobalSettings {
         String content;
         String url;
         int post_id;
+        int category_id;
 
-        final String sql = "INSERT INTO t_wx_post(post_id, title, content, url, image_url) VALUES(%d, '%s', '%s', '%s', '%s') ON DUPLICATE KEY UPDATE id= id";
+        final String sql = "INSERT INTO t_wx_post(post_id, title, content, url, image_url, category_id) " +
+                "VALUES(%d, '%s', '%s', '%s', '%s', %d) ON DUPLICATE KEY UPDATE id= id";
         String tmpSql;
         List<String> sqls = new ArrayList<>();
 
@@ -110,20 +112,27 @@ public class Global extends GlobalSettings {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher;
 
+        ArrayNode categoryNode;
         for (JsonNode node : arrayNode) {
             imageUrl = "";
             post_id = node.path("id").asInt();
             content = node.path("content").asText();
             title = node.path("title").asText();
             url = node.path("url").asText();
+            categoryNode = (ArrayNode) node.path("categories");
+            if (categoryNode != null && categoryNode.size() > 0) {
+                category_id = categoryNode.get(0).path("id").asInt();
+            } else {
+                category_id = 1; // default, uncategorized
+            }
 
             matcher = pattern.matcher(content);
 //            boolean found = matcher.find();
-            int count = matcher.groupCount();
-            if (matcher.find()){
+//            int count = matcher.groupCount();
+            if (matcher.find()) {
                 imageUrl = matcher.group(1);
             }
-            tmpSql = String.format(sql, post_id, title, content, url, imageUrl);
+            tmpSql = String.format(sql, post_id, title, content, url, imageUrl, category_id);
             sqls.add(tmpSql);
         }
 
