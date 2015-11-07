@@ -2,7 +2,7 @@
 cd /root/mpserver/maopao_server
 git pull
 activator clean compile stage
-PROCESS=`ps -ef|grep $1|grep -v grep|grep -v PPID|awk '{ print $2}'`
+PROCESS=`ps -ef|grep play|grep -v grep|grep -v PPID|awk '{ print $2}'`
 for i in $PROCESS
 do
   echo "Kill the $1 process [ $i ]"
