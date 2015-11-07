@@ -64,3 +64,7 @@ GET         /api/wx/post/:id                     controllers.WxController.post(i
 GET         /api/wallpaper/wallpapers            controllers.WallpaperController.getWallpagers(t:Int ?= 4)
 GET         /api/wallpaper/submit                controllers.WallpaperController.submit(imageUrl:String, name:String ?= "", author:String ?= "", desc:String ?= "")
 #end wallpaper
+
+#start rongcloud
+GET         /api/rongcloud_token                 controllers.RongcloudController.fetchRongcloudToken()
+#end rongcloud

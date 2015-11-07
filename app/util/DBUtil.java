@@ -1,11 +1,15 @@
 package util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.qiniu.util.Json;
 import play.db.DB;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -249,4 +253,76 @@ public class DBUtil {
     public static ResultSet query(Statement statement, String sql) throws SQLException {
         return statement.executeQuery(sql);
     }
+
+    /**
+     *
+     * @param table
+     * @param selections
+     * @param where do not contain where, such as: id > 3
+     * @return
+     */
+    public static List<JsonNode> executeQuery(String table, String[] selections, String where){
+        if (StringUtil.isEmputy(table) || selections == null || selections.length == 0){
+            return null;
+        }
+        StringBuilder sb = new StringBuilder("SELECT ");
+        for (int i = 0; i < selections.length; i ++){
+            if (i == 0){
+                sb.append(selections[i]);
+                sb.append(",");
+            }else if (i == selections.length - 1){
+                sb.append(selections[i]);
+                sb.append(" ");
+            }else {
+                sb.append(selections[i]);
+                sb.append(",");
+            }
+        }
+        sb.append(" FROM ");
+        sb.append(table);
+
+        sb.append(" WHERE ");
+        sb.append(where);
+
+        Connection connection;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        ObjectNode objectNode;
+        List<JsonNode> objectNodes = new ArrayList<>();
+
+        connection = DB.getConnection();
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sb.toString());
+            objectNode = play.libs.Json.newObject();
+
+            while (resultSet.next()){
+                for (int i = 0; i < selections.length; i++) {
+                    objectNode.put(selections[i], resultSet.getString(selections[i]));
+                }
+                objectNodes.add(objectNode);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (statement != null){
+                    statement.close();
+                }
+                if (connection != null){
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return objectNodes;
+    }
+
 }
