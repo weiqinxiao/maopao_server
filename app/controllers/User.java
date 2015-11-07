@@ -281,8 +281,8 @@ public class User extends Controller {
     }
 
     public static Result currentUser() {
-        //long uid = ControllerUtil.getLoginUid();
-        long uid = 2;
+        long uid = ControllerUtil.getLoginUid();
+        //long uid = 2;
         if (uid < 0) {
             return ControllerUtil.newUnLoginResponse();
         }
@@ -299,8 +299,8 @@ public class User extends Controller {
      * @return
      */
     private static Result follow(int flag) {
-        //String uid = session("id");
-        String uid = "2";
+        String uid = session("id");
+        //String uid = "2";
         FollowList followList = new FollowList();
         if (uid == null || uid.trim().length() == 0) {
             followList.setCode(Constant.UN_LOGIN);
