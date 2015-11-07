@@ -2,7 +2,14 @@
 cd /root/mpserver/maopao_server
 git pull
 activator clean compile stage
-play_pid=`cat /root/mpserver/maopao_server/target/universal/stage/RUNNING_PID`
-kill -9 $play_pid
-rm /root/mpserver/maopao_server/target/universal/stage/RUNNING_PID
+PROCESS=`ps -ef|grep $1|grep -v grep|grep -v PPID|awk '{ print $2}'`
+for i in $PROCESS
+do
+  echo "Kill the $1 process [ $i ]"
+  kill -9 $i
+done
+pidFile="/root/mpserver/maopao_server/target/universal/stage/RUNNING_PID"
+if [ ! -f "$myFile" ]; then
+  rm $pidFile
+fi
 activator start
