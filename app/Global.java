@@ -68,9 +68,9 @@ public class Global extends GlobalSettings {
 
     public static void syncPosts() {
 
-        long t = 10 * 1000;
+        int t = 60 * 1000;
         String url = "http://diaoba.wang/?json=get_recent_posts&count=20";
-        F.Promise<JsonNode> jsonPromise = WS.url(url).get().map(
+        F.Promise<JsonNode> jsonPromise = WS.url(url).setTimeout(t).get().map(
                 new F.Function<WSResponse, JsonNode>() {
                     public JsonNode apply(WSResponse response) {
                         JsonNode json = response.asJson();
