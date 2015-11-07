@@ -9,7 +9,7 @@ do
   kill -9 $i
 done
 pidFile="/root/mpserver/maopao_server/target/universal/stage/RUNNING_PID"
-if [ ! -f "$myFile" ]; then
+if [ -f "$myFile" ]; then
   rm $pidFile
 fi
 activator start
