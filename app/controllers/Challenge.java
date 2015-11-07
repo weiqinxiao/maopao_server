@@ -59,42 +59,7 @@ public class Challenge extends Controller{
     }
 
     public static Result getTodayChallengeCount(){
-        String sql = "SELECT count(1) FROM t_challenge_record WHERE start > %d";
-        long todayStartMillis = TimeUtil.getTodayStartMillis();
-        sql = String.format(sql, todayStartMillis);
-        long count = 0;
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DB.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                count = resultSet.getLong(1);
-                break;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (statement != null){
-                    statement.close();
-                }
-                if (connection != null){
-                    connection.close();
-                }
-            }catch (SQLException e){
-
-            }
-
-        }
-
+        long count = DBUtil.queryCount(Constant.TABLE_CHALLENGE_DETAIL , "start > " + TimeUtil.getTodayStartMillis());
         return ok(Long.toString(count + 100)); // haha, at least 100
     }
 

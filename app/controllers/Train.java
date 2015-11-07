@@ -1,5 +1,6 @@
 package controllers;
 
+import constant.Constant;
 import model.Record;
 import play.db.DB;
 import play.libs.Json;
@@ -20,47 +21,11 @@ import java.util.Map;
 public class Train extends Controller{
 
     public static Result getTodayFinishedTrainCount(){
-        String sql = "SELECT count(1) from t_train_record WHERE start > %d";
-        long todayStartMillis = TimeUtil.getTodayStartMillis();
-        sql = String.format(sql, todayStartMillis);
-
-
-        long count = 0;
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DB.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                count = resultSet.getLong(1);
-                break;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (statement != null){
-                    statement.close();
-                }
-                if (connection != null){
-                    connection.close();
-                }
-            }catch (SQLException e){
-
-            }
-
-        }
+        long count = DBUtil.queryCount(Constant.TABLE_TRAIN_DETAIL, "start > " + TimeUtil.getTodayStartMillis());
         return ok(Long.toString(count + 100)); // haha, at least 100
     }
 
-    // Attention: when submit record, the owner field is null, because it is yourselef
+    // Attention: when submit record, the owner field is null, because it is yourself
     public static Result submitTrainRecord(){
         String uid = session("id");
         Record record = new Record();

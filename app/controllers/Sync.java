@@ -49,11 +49,11 @@ public class Sync extends Controller {
 
         String table = syncRecordList.getTable();
         switch (table) {
-            case "train":
-            case "challenge":
-                return insertDayRecord(uid, syncRecordList);
-            default:
+            case "train": // train detail
+            case "challenge": // challenge detail
                 return insertDetailRecord(uid, syncRecordList);
+            default:
+                return insertDayRecord(uid, syncRecordList);
         }
     }
 
