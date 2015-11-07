@@ -2,6 +2,7 @@ package controllers;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import constant.Constant;
 import play.db.DB;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -24,7 +25,9 @@ public class App extends Controller{
         Config config = ConfigFactory.parseFile(new File("conf/application.conf")).resolve();
         String version = config.getString("app.version");
         String name = config.getString("app.name");
-       return ok("HELLO world:  " + name + " " + version  + " " + TimeUtil.getCurrentWeekStartMillis() + " " + TimeUtil.getTodayStartMillis());
+       return ok("HELLO world: " + name + " " + version  + " "
+               + " isDebugMode: " + (Constant.isDebugMode ? " true ":" false ")
+               + TimeUtil.getCurrentWeekStartMillis() + " " + TimeUtil.getTodayStartMillis());
     }
 
     public static Result test(){

@@ -30,7 +30,6 @@ public class RongcloudController extends Controller {
     public static Promise<Result> fetchRongcloudToken() {
 
         long uid = ControllerUtil.getLoginUid();
-        uid = 2;
         if (uid < 0) {
             return Promise.pure(ControllerUtil.newUnLoginResponse());
         }

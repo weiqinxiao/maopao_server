@@ -4,6 +4,8 @@ package constant;
  * Created by jiangecho on 15/10/27.
  */
 public class Constant {
+    public static boolean isDebugMode = false;
+
     public static final String RESPONSE_CODE = "code";
     public static final String RESPONSE_MSG = "msg";
 

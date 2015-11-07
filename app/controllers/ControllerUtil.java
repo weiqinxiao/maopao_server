@@ -114,6 +114,9 @@ public class ControllerUtil extends Controller {
      * @return uid >= 0, login; < 0, not login
      */
     public static long getLoginUid() {
+        if (Constant.isDebugMode) {
+            return 2;
+        }
         String tmp = session("uid");
         long uid = -1;
         try {
