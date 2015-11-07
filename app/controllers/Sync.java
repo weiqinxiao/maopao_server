@@ -49,8 +49,8 @@ public class Sync extends Controller {
 
         String table = syncRecordList.getTable();
         switch (table) {
-            case "train": // train detail
-            case "challenge": // challenge detail
+            case "t_train": // train detail, --> t_train_record
+            case "t_challenge": // challenge detail, --> t_challenge_record
                 return insertDetailRecord(uid, syncRecordList);
             default:
                 return insertDayRecord(uid, syncRecordList);
@@ -87,7 +87,7 @@ public class Sync extends Controller {
     private static Result insertDetailRecord(String uid, SyncRecordList syncRecordList) {
         // t_train_record and t_challenge_record 用户存储用户每天的数据，不是每次的数据
         String table;
-        if (syncRecordList.getTable().equals("trainDetail")) {
+        if (syncRecordList.getTable().equals("t_train")) {
             table = "t_train_record";
         } else {
             table = "t_challenge_record";
