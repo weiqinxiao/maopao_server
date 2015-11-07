@@ -59,18 +59,15 @@ public class RongcloudController extends Controller {
                 .setHeader("Timestamp", timestamp)
                 .setHeader("Signature", signature)
                 .post(jsonNodeList.get(0))
-                .map(wsResponse -> wsResponse.asJson()).map(new F.Function<JsonNode, Result>() {
-                    @Override
-                    public Result apply(JsonNode jsonNode) throws Throwable {
-                        if (jsonNode.path("code").asInt() == 200) {
-                            resultNode.put("code", 0);
-                            resultNode.put("token", jsonNode.path("token"));
-                        } else {
-                            resultNode.put("code", -1);
-                            resultNode.put("rongCloudCode", jsonNode.path("code"));
-                        }
-                        return ok(resultNode);
+                .map(wsResponse -> wsResponse.asJson()).map(jsonNode -> {
+                    if (jsonNode.path("code").asInt() == 200) {
+                        resultNode.put("code", 0);
+                        resultNode.put("token", jsonNode.path("token"));
+                    } else {
+                        resultNode.put("code", -1);
+                        resultNode.put("rongCloudCode", jsonNode.path("code"));
                     }
+                    return ok(resultNode);
                 });
 
 
